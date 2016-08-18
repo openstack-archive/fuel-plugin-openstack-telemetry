@@ -1,0 +1,34 @@
+# Plugin name
+name: telemetry
+# Human-readable name for your plugin
+title: The telemetry plugin for StackLight integration
+# Plugin version
+version: '0.1.0'
+# Description
+description: Deploy/configure Ceilometer and Aodh with StackLight
+# Required fuel version
+fuel_version: ['9.0']
+# Specify license of your plugin
+licenses: ['Apache License Version 2.0']
+# Specify author or company name
+authors: ['Roman Babyuk, rbabyuk@mirantis.com']
+# A link to the plugin's page
+homepage: 'https://github.com/openstack/fuel-plugins'
+# Specify a group which your plugin implements, possible options:
+# network, storage, storage::cinder, storage::glance, hypervisor,
+# equipment
+groups: ['monitoring']
+# Change `false` to `true` if the plugin can be installed in the environment
+# after the deployment.
+is_hotpluggable: true
+
+# The plugin is compatible with releases in the list
+releases:
+  - os: ubuntu
+    version: mitaka-9.0
+    mode: ['ha']
+    deployment_scripts_path: deployment_scripts/
+    repository_path: repositories/ubuntu
+
+# Version of plugin package
+package_version: '4.0.0'
