@@ -1,0 +1,11 @@
+attributes:
+  metadata:
+    # Settings group can be one of "general", "security", "compute", "network",
+    # "storage", "logging", "openstack_services" and "other".
+    group: 'other'
+  advanced_settings:
+    label: "Advanced settings"
+    value: false
+    description: "The plugin determines the best settings if not set"
+    weight: 19
+    type: checkbox

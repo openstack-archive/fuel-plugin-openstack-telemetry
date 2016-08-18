@@ -1,0 +1,191 @@
+# Groups definitions
+####################
+
+# Tasks definitions for the deployment
+######################################
+- id: telemetry-hiera
+  type: puppet
+  version: 2.0.0
+  requires: [globals]
+  required_for: [logging]
+  role: ['/.*/']
+  parameters:
+    puppet_manifest: "puppet/manifests/hiera.pp"
+    puppet_modules: "puppet/modules:/etc/puppet/modules"
+    timeout: 120
+  # reexecute_on is needed for scale-down operations
+  reexecute_on:
+    - deploy_changes
+
+# AODH related tasks
+####################
+- id: telemetry-aodh
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [ceilometer-controller, openstack-controller]
+  requires: [openstack-haproxy]
+  cross-depends:
+    - name: telemetry-aodh-db
+    - name: telemetry-aodh-keystone
+    - name: telemetry-hiera
+  role: [primary-controller, controller]
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/aodh/aodh.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 3600
+  reexecute_on:
+    - deploy_changes
+  test_pre:
+    cmd: ruby /etc/puppet/modules/openstack_tasks/examples/aodh/aodh_pre.rb
+  test_post:
+    cmd: ruby /etc/puppet/modules/openstack_tasks/examples/aodh/aodh_post.rb
+
+- id: telemetry-aodh-keystone
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller]
+  required_for: [telemetry-aodh]
+  requires: [primary-keystone, keystone]
+  cross-depends:
+    - name: keystone
+      role: self
+  role: [primary-controller, controller]
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/aodh/keystone.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 1800
+
+- id: telemetry-aodh-db
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller]
+  cross-depends:
+    - name: /^(primary-)?database$/
+  required_for: [telemetry-aodh]
+  role: [primary-controller, controller]
+  requires: [primary-database, database]
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/aodh/db.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 1800
+
+- id: telemetry-openstack-haproxy-aodh
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [deploy_end]
+  requires: [deploy_start, primary-cluster-haproxy, cluster-haproxy]
+  cross-depends:
+    - name: /(primary-)?cluster-haproxy/
+      role: self
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy-aodh.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 300
+  test_pre:
+    cmd: ruby /etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy_pre.rb
+  test_post:
+    cmd: ruby /etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy-aodh_post.rb
+
+# Ceilometer related tasks
+##########################
+- id: telemetry-ceilometer-controller
+  type: puppet
+  version: 2.1.0
+  cross-depends:
+    - name: telemetry-ceilometer-keystone
+    - name: telemetry-hiera
+  groups: [primary-controller, controller]
+  required_for: [primary-openstack-controller, openstack-controller]
+  requires: [openstack-haproxy]
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/ceilometer/controller.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 3600
+  test_pre:
+    cmd: ruby /etc/puppet/modules/openstack_tasks/examples/ceilometer/controller_pre.rb
+  test_post:
+    cmd: ruby /etc/puppet/modules/openstack_tasks/examples/ceilometer/controller_post.rb
+
+- id: telemetry-ceilometer-compute
+  type: puppet
+  version: 2.1.0
+  groups: [compute, compute-vmware]
+  required_for: [deploy_end]
+  requires: [ceilometer-controller, top-role-compute]
+  cross-depends:
+    - name: ceilometer-controller
+    - name: telemetry-hiera
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/ceilometer/compute.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 3600
+  test_pre:
+    cmd: ruby /etc/puppet/modules/openstack_tasks/examples/ceilometer/compute_pre.rb
+  test_post:
+    cmd: ruby /etc/puppet/modules/openstack_tasks/examples/ceilometer/compute_post.rb
+
+- id: telemetry-ceilometer-keystone
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller]
+  required_for: [ceilometer-controller]
+  requires: [primary-keystone, keystone]
+  cross-depends:
+    - name: /(primary-)?keystone/
+      role: self
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/ceilometer/keystone.pp"
+    puppet_modules: "/etc/puppet/modules"
+    timeout: 1800
+
+- id: telemetry-openstack-haproxy-ceilometer
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [deploy_end]
+  requires: [deploy_start, primary-cluster-haproxy, cluster-haproxy]
+  cross-depends:
+    - name: /(primary-)?cluster-haproxy/
+      role: self
+  parameters:
+    puppet_manifest: /etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy-ceilometer.pp
+    puppet_modules: /etc/puppet/modules
+    timeout: 300
+  test_pre:
+    cmd: ruby /etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy_pre.rb
+  test_post:
+    cmd: ruby /etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy-ceilometer_post.rb
+
+#- id: telemetry-ceilometer-radosgw-user
+#  type: puppet
+#  version: 2.1.0
+#  role: [primary-controller, controller]
+#  requires: [post_deployment_start, enable_rados]
+#  required_for: [post_deployment_end]
+#  parameters:
+#    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/ceilometer/radosgw_user.pp"
+#    puppet_modules: "/etc/puppet/modules"
+#    timeout: 300
+#    cwd: /
+
+# skip base tasks
+- id: ceilometer-radosgw-user
+  type: skipped
+- id: ceilometer-keystone
+  type: skipped
+- id: ceilometer-compute
+  type: skipped
+- id: ceilometer-controller
+  type: skipped
+- id: aodh
+  type: skipped
+- id: aodh-db
+  type: skipped
+- id: aodh-keystone
+  type: skipped
+- id: openstack-haproxy-aodh
+  type: skipped
+- id: openstack-haproxy-ceilometer
+  type: skipped
