@@ -1,0 +1,19 @@
+attributes:
+  metadata:
+    # Settings group can be one of "general", "security", "compute", "network",
+    # "storage", "logging", "openstack_services" and "other".
+    group: 'other'
+  telemetry_text:
+#    value: 'Allows you to integrate Ceilo,eter and Aodh with StackLight'
+    value: false
+    label: 'Some label here'
+    description: 'super puper Ceilometer and Aodh integration with StackLight'
+    weight: 25
+    type: "checkbox"
+
+  advanced_settings:
+    label: "Advanced settings"
+    value: false
+    description: "The plugin determines the best settings if not set"
+    weight: 19
+    type: checkbox
