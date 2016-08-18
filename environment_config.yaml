@@ -1,0 +1,91 @@
+attributes:
+  metadata:
+    # Settings group can be one of "general", "security", "compute", "network",
+    # "storage", "logging", "openstack_services" and "other".
+    group: 'other'
+  advanced_settings:
+    label: "Advanced settings"
+    value: false
+    description: "The plugin determines the best settings if not set"
+    weight: 10
+    type: checkbox
+
+  elastic_search_ip:
+    value: ''
+    label: 'External ElasticSearch'
+    description: "In case you want to use external ElasticSearch please spesify an IP or DNS name here"
+    weight: 11
+    type: "text"
+    regex:
+      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
+      error: "Invalid address or name."
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+  elastic_search_port:
+    value: '9200'
+    label: 'External ElasticSearch port'
+    description: "In case you want to use external ElasticSearch please spesify the port number. DEFAULT is 9200"
+    weight: 12
+    type: "text"
+    regex:
+      source: '^\d{0,5}$'
+      error: "You must provide a valid port number"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+  influxdb_ip:
+    value: ''
+    label: 'External InfluxDB'
+    description: "In case you want to use external InfluxDB please spesify an IP or DNS name here"
+    weight: 13
+    type: "text"
+    regex:
+      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
+      error: "Invalid address or name."
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+  influxdb_port:
+    value: '8086'
+    label: 'External InfluxDB port'
+    description: "In case you want to use external InfluxDB please spesify the port number. DEFAULT is 8086"
+    weight: 14
+    type: "text"
+    regex:
+      source: '^\d{0,5}$'
+      error: "You must provide a valid port number"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+  influxdb_user:
+    value: ''
+    label: 'External InfluxDB user'
+    description: "The username to access external InfluxDB"
+    weight: 15
+    type: "text"
+    regex:
+      source: '\S'
+      error: "You must provide a username."
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+  influxdb_password:
+    value: ''
+    label: 'External InfluxDB password'
+    description: "The password to access external InfluxDB."
+    weight: 16
+    type: "password"
+    regex:
+      source: '^[\S]{4,}$'
+      error: "You must provide a password with at least 4 characters"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+
