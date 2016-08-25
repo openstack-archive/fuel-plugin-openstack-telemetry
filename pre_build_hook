@@ -1,5 +1,13 @@
 #!/bin/bash
 
-# Add here any the actions which are required before plugin build
-# like packages building, packages downloading from mirrors and so on.
-# The script should return 0 if there were no errors.
+set -eux
+
+. "$(dirname "$(readlink -f "$0")")"/functions.sh
+
+HEKA_VERSION="0.10.0"
+
+download_packages \
+    https://github.com/elemoine/heka/releases/download/ratelimit-1/heka_${HEKA_VERSION}_amd64.deb
+
+check_md5sum heka_${HEKA_VERSION}_amd64.deb 69514d94173181a8d1dcab769062fdac
+
