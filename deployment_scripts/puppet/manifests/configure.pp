@@ -13,36 +13,24 @@ if hiera('lma::collector::elasticsearch::server', false) {
   $elasticsearch_node      = hiera('lma::collector::elasticsearch::server')
   $elasticsearch_port      = hiera('lma::collector::elasticsearch::rest_port')
 } else {
-  $elasticsearch_node      = ''
-  $elasticsearch_port      = ''
+  $elasticsearch_node      = '0.0.0.0'
+  $elasticsearch_port      = '9200'
 }
 
-
-if hiera('lma::collector::influxdb::server', false) {
-  $influxdb_vip            = hiera('lma::collector::influxdb::server')
-  $influxdb_port           = hiera('lma::collector::influxdb::port')
-  $influx_database         = hiera('lma::collector::influxdb::database')
-  # TODO move to hiera
-  $influx_user             = 'root'
-  $influx_password         = hiera('lma::collector::influxdb::password')
-  $influx_root_password    = hiera('lma::collector::influxdb::root_password')
-} else {
-  $influxdb_vip            = ''
-  $influxdb_port           = ''
-  $influx_database         = ''
-  # TODO move to hiera
-  $influx_user             = ''
-  $influx_password         = ''
-  $influx_root_password    = ''
-}
 $ceilometer_service_name = $::ceilometer::params::api_service_name
 # TODO move to hiera
 $event_pipeline_file     = '/etc/ceilometer/event_pipeline.yaml'
 # TODO move to hiera
 $ceilometer_publishers   = 'direct'
 
-# calculated values
-$metering_connection = "stacklight://${influx_user}:${influx_password}@${influxdb_vip}:${influxdb_port}/ceilometer"
+$influxdb_address  = hiera('telemetry::influxdb::address')
+$influxdb_port     = hiera('telemetry::influxdb::port')
+$influxdb_database = hiera('telemetry::influxdb::database')
+$influx_user       = hiera('telemetry::influxdb::user')
+$influx_password   = hiera('telemetry::influxdb::password')
+
+$metering_connection = "stacklight://${influx_user}:${influx_password}@${influxdb_address}:${influxdb_port}/${influxdb_database}"
+
 $resource_connection = "es://${elasticsearch_node}:${elasticsearch_port}"
 $event_connection    = "es://${elasticsearch_node}:${elasticsearch_port}"
 $connection          = $metering_connection
@@ -90,8 +78,10 @@ service { 'ceilometer-collector':
 
 ceilometer_config { 'database/metering_connection': value => $metering_connection }
 ceilometer_config { 'database/resource_connection': value => $resource_connection }
-ceilometer_config { 'database/event_connection': value => $event_connection }
-ceilometer_config { 'database/connection': value => $connection }
+ceilometer_config { 'database/event_connection':    value => $event_connection }
+ceilometer_config { 'database/connection':          value => $connection }
+ceilometer_config { 'notification/store_events':    value => false }
+
 
 service { 'ceilometer-service':
       ensure     => $service_ensure,
