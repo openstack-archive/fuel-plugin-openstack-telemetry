@@ -1,0 +1,6 @@
+[sample_decoder]
+type = "SandboxDecoder"
+filename = "/usr/share/heka/lua_modules/decoders/metering.lua"
+
+[sample_decoder.config]
+    metadata_fields = 'status deleted container_format min_ram updated_at min_disk is_public size checksum created_at disk_format protected instance_host host  display_name instance_id instance_type status state' 
