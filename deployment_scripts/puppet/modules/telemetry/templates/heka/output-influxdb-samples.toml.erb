@@ -1,10 +1,10 @@
-[samples_influxdb_output] 
-type = "HttpOutput" 
+[samples_influxdb_output]
+type = "HttpOutput"
 message_matcher = "Fields[payload_type] == 'txt' && Fields[payload_name] == 'sample_data'"
 encoder = "influxdb_encoder"
-address = "http://<%= @influxdb_server %>:8086/write?db=ceilometer&precision=ns"
-username = "root"
-password = "r00tme"
+address = "http://<%= @influxdb_address %>:<%= @influxdb_port %>/write?db=<%= @influxdb_database %>&precision=ns"
+username = "<%= @influxdb_user %>"
+password = "<%= @influxdb_password %>"
 http_timeout = 5000
 method = "POST"
 use_buffering = true

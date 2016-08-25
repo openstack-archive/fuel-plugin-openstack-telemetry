@@ -1,5 +1,24 @@
 #!/bin/bash
 
-# Add here any the actions which are required before plugin build
-# like packages building, packages downloading from mirrors and so on.
-# The script should return 0 if there were no errors.
+set -eux
+
+. "$(dirname "$(readlink -f "$0")")"/functions.sh
+
+HEKA_VERSION="0.10.0"
+COLLECTOR_TAG="0.10.0"
+
+# Download Heka deb package
+
+download_packages \
+    https://github.com/elemoine/heka/releases/download/ratelimit-1/heka_${HEKA_VERSION}_amd64.deb
+check_md5sum heka_${HEKA_VERSION}_amd64.deb 69514d94173181a8d1dcab769062fdac
+
+# Download Heka puppet module from lma collector plugin
+
+URL="https://github.com/openstack/fuel-plugin-lma-collector/archive/${COLLECTOR_TAG}.tar.gz"
+HEKA_MODULE_PATH="fuel-plugin-lma-collector-${COLLECTOR_TAG}/deployment_scripts/puppet/modules/heka"
+DESTINATION=deployment_scripts/puppet/modules
+TEMP_DIR=`mktemp -u`
+download_file $URL $COLLECTOR_TAG.tar.gz $TEMP_DIR
+tar -xf $TEMP_DIR/$COLLECTOR_TAG.tar.gz -C $DESTINATION --strip-components=4 $HEKA_MODULE_PATH
+rm -fr $TEMP_DIR
