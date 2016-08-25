@@ -2,6 +2,7 @@
 type = "HttpOutput" 
 message_matcher = "Fields[payload_type] == 'txt' && Fields[payload_name] == 'sample_data'"
 encoder = "influxdb_encoder"
+# TODO port, user, password - from parameters
 address = "http://<%= @influxdb_server %>:8086/write?db=ceilometer&precision=ns"
 username = "root"
 password = "r00tme"
