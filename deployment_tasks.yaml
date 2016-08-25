@@ -177,8 +177,10 @@
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
-  required_for: [deploy_end]
-  requires: [deploy_start, telemetry-ceilometer-controller]
+  requires: [post_deployment_start,telemetry-ceilometer-controller]
+  required_for: [post_deployment_end]
+#  required_for: [deploy_end]
+#  requires: [deploy_start, telemetry-ceilometer-controller]
   cross-depends:
     - name: primary-influxdb_grafana
 #    - name: lma-hiera-override
@@ -190,11 +192,36 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
-- id: telemetry-influxdb-create-db
+
+- id: telemetry-hiera-post-deployment
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
   requires: [post_deployment_start]
+  required_for: [post_deployment_end]
+  cross-depends:
+    - name: primary-influxdb_grafana
+  parameters:
+    puppet_manifest: puppet/manifests/hiera-post_deployment.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
+- id: telemetry-heka
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end]
+  requires: [telemetry-influxdb-create-db]
+  parameters:
+    puppet_manifest: puppet/manifests/heka.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
+- id: telemetry-influxdb-create-db
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  requires: [post_deployment_start,telemetry-hiera-post-deployment]
   required_for: [post_deployment_end]
   cross-depends:
     - name: primary-influxdb_grafana

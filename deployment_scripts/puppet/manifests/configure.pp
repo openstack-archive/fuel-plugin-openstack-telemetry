@@ -13,8 +13,8 @@ if hiera('lma::collector::elasticsearch::server', false) {
   $elasticsearch_node      = hiera('lma::collector::elasticsearch::server')
   $elasticsearch_port      = hiera('lma::collector::elasticsearch::rest_port')
 } else {
-  $elasticsearch_node      = ''
-  $elasticsearch_port      = ''
+  $elasticsearch_node      = '0.0.0.0'
+  $elasticsearch_port      = '9200'
 }
 
 
@@ -90,8 +90,8 @@ service { 'ceilometer-collector':
 
 ceilometer_config { 'database/metering_connection': value => $metering_connection }
 ceilometer_config { 'database/resource_connection': value => $resource_connection }
-ceilometer_config { 'database/event_connection': value => $event_connection }
-ceilometer_config { 'database/connection': value => $connection }
+ceilometer_config { 'database/event_connection':    value => $event_connection }
+ceilometer_config { 'database/connection':          value => $connection }
 
 service { 'ceilometer-service':
       ensure     => $service_ensure,
