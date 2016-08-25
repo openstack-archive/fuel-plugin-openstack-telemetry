@@ -1,0 +1,13 @@
+[counter_file]
+type = "FileOutput"
+message_matcher = "Fields[payload_type] == 'txt' && Fields[payload_name] == 'sample_data'"
+#message_matcher = "Fields[payload_type] == 'txt' && Fields[payload_name] == 'sample'"
+#message_matcher = "Fields[aggregator] == NIL && Type =~ /sample.bulk_metric$/"
+path = "/tmp/heka-influxdb-points.log"
+perm = "777"
+flush_count = 1
+flush_operator = "OR"
+encoder = "pencoder"
+
+[pencoder]
+type = "PayloadEncoder"

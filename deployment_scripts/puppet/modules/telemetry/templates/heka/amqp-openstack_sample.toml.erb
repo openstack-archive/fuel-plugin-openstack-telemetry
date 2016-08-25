@@ -1,0 +1,13 @@
+[openstack_sample_amqp]
+type = "AMQPInput"
+url = "amqp://nova:y4oWe83qzDqmoZcl6g55dt9R@172.16.173.14:5673/"
+exchange = "ceilometer"
+exchange_type = "topic"
+exchange_durability = false
+exchange_auto_delete = false
+queue_auto_delete = false
+queue = "metering.sample"
+routing_key = "metering.sample"
+decoder = "sample_decoder"
+splitter = "NullSplitter"
+can_exit = false

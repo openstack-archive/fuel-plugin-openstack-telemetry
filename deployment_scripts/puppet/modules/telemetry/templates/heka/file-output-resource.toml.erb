@@ -1,0 +1,13 @@
+[resource_file]
+type = "FileOutput"
+message_matcher = "Type == 'resource'"
+path = "/tmp/resource-output.log"
+perm = "777"
+flush_count = 1
+flush_operator = "OR"
+#encoder = "pencoder"
+encoder = "elasticsearch_resource_encoder"
+
+
+[pencoder]
+type = "PayloadEncoder"
