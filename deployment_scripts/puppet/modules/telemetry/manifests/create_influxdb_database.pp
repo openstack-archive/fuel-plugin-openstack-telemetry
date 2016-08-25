@@ -36,7 +36,7 @@ if $telemetry['influxdb_ip'] {
   notice('Use StackLight integrated InfluxDB')
 
   if !hiera('influxdb_grafana',false) {
-    fail('influxdb_grafana not found, looks like plugin is not installed')
+    fail('The StackLight InfluxDB-Grafana Plugin not found, please configure external InfluxDB in advanced settings or install the plugin')
   }
 
   $influxdb_grafana = hiera('influxdb_grafana')
@@ -46,6 +46,10 @@ if $telemetry['influxdb_ip'] {
   $network_metadata = hiera_hash('network_metadata')
   $influxdb_nodes = get_nodes_hash_by_roles($network_metadata, ['influxdb_grafana', 'primary-influxdb_grafana'])
   $nodes_array = values($influxdb_nodes)
+
+  if count($nodes_array)==0 {
+    fail('No nodes with InfluxDB Grafana role, please add one or more nodes with this role to the environment or configure external InfluxDB in advanced settings')
+  }
   # test for multiple inxlixdb nodes !!!
   $influxdb_server = $nodes_array[0]['network_roles']['management']
   #$influxdb_server = $influxdb_nodes[0]['internal_address']
