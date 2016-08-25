@@ -1,0 +1,18 @@
+[samples_influxdb_output] 
+type = "HttpOutput" 
+message_matcher = "Fields[payload_type] == 'txt' && Fields[payload_name] == 'sample_data'"
+encoder = "influxdb_encoder"
+address = "http://172.16.173.17:8086/write?db=ceilometer&precision=ns"
+username = "root"
+password = "r00tme"
+http_timeout = 5000
+method = "POST"
+use_buffering = true
+
+[samples_influxdb_output.buffering]
+max_buffer_size = 1073741824
+max_file_size = 134217728
+full_action = "drop"
+
+ [samples_influxdb_output.headers]
+     Content-Type = ["application/x-www-form-urlencoded"]
