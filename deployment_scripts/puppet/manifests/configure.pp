@@ -51,7 +51,7 @@ $packages = {
   'ceilometer-collector' => {
     # keep 'absent' instead of 'purged' for idempotence
     ensure => 'absent',
-    require => Service["ceilometer-collector"],
+    require => Service['ceilometer-collector'],
   },
   'python-pip' => {
     ensure => 'present',
@@ -81,17 +81,17 @@ create_resources(package, $packages)
 
 # Stop not needed any more service
 service { 'ceilometer-collector':
-    ensure     => stopped,
-    enable     => false,
-    hasstatus  => true,
+    ensure    => stopped,
+    enable    => false,
+    hasstatus => true,
 }
 
 # TODO validate values before proceed
 
-ceilometer_config { 'database/metering_connection': value => "${metering_connection}" }
-ceilometer_config { 'database/resource_connection': value => "${resource_connection}" }
-ceilometer_config { 'database/event_connection': value => "${event_connection}" }
-ceilometer_config { 'database/connection': value => "${connection}" }
+ceilometer_config { 'database/metering_connection': value => $metering_connection }
+ceilometer_config { 'database/resource_connection': value => $resource_connection }
+ceilometer_config { 'database/event_connection': value => $event_connection }
+ceilometer_config { 'database/connection': value => $connection }
 
 service { 'ceilometer-service':
       ensure     => $service_ensure,
