@@ -20,50 +20,104 @@ $elasticsearch_script_indexed          = 'on'
 
 $hiera_file = '/etc/hiera/plugins/telemetry.yaml'
 
-  # Elasticsearch
-  $is_elasticsearch_node = roles_include(['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
+# Elasticsearch
+$is_elasticsearch_node = roles_include(['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
 
-  if $plugin_data['elastic_search_ip'] {
-    $elasticsearch_mode = 'remote'
-  } else {
-    $elasticsearch_mode = 'local'
+if $plugin_data['elastic_search_ip'] {
+  $elasticsearch_mode = 'remote'
+} else {
+  $elasticsearch_mode = 'local'
+}
+
+#$elasticsearch_mode = $plugin_data['elasticsearch_mode']
+$es_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
+$es_nodes_count = count($es_nodes)
+
+case $elasticsearch_mode {
+  'remote': {
+    $es_server = $plugin_data['elastic_search_ip']
+    #$monitor_elasticsearch = false
   }
-
-  #$elasticsearch_mode = $plugin_data['elasticsearch_mode']
-  $es_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
-  $es_nodes_count = count($es_nodes)
-
-  case $elasticsearch_mode {
-    'remote': {
-      $es_server = $plugin_data['elastic_search_ip']
+  'local': {
+    $es_vip_name = 'es_vip_mgmt'
+    if $network_metadata['vips'][$es_vip_name] {
+      $es_server = $network_metadata['vips'][$es_vip_name]['ipaddr']
+      #$monitor_elasticsearch = true
+    } elsif $es_nodes_count > 0 {
+      $es_server = $es_nodes[0]['internal_address']
+      #$monitor_elasticsearch = true
+    } else {
+      $es_server = undef
       #$monitor_elasticsearch = false
     }
-    'local': {
-      $es_vip_name = 'es_vip_mgmt'
-      if $network_metadata['vips'][$es_vip_name] {
-        $es_server = $network_metadata['vips'][$es_vip_name]['ipaddr']
-        #$monitor_elasticsearch = true
-      } elsif $es_nodes_count > 0 {
-        $es_server = $es_nodes[0]['internal_address']
-        #$monitor_elasticsearch = true
-      } else {
-        $es_server = undef
-        #$monitor_elasticsearch = false
-      }
-    }
-    default: {
-      fail("'${elasticsearch_mode}' mode not supported for Elasticsearch")
-    }
   }
-  if $es_nodes_count > 0 or $es_server {
-    $es_is_deployed = true
-  } else {
-    $es_is_deployed = false
+  default: {
+    fail("'${elasticsearch_mode}' mode not supported for Elasticsearch")
+  }
+}
+if $es_nodes_count > 0 or $es_server {
+  $es_is_deployed = true
+} else {
+  $es_is_deployed = false
+}
+
+
+# Get influxdb (TODO) :move to hiera
+
+$telemetry = hiera('telemetry')
+
+if $telemetry['influxdb_address'] {
+
+  notice('Use External InfluxDB')
+
+  $influxdb_mode = 'remote'
+
+  $influxdb_address  = $telemetry['influxdb_address']
+  $influxdb_port     = $telemetry['influxdb_port']
+  $influxdb_database = $telemetry['influxdb_database']
+  $influxdb_user     = $telemetry['influxdb_user']
+  $influxdb_password = $telemetry['influxdb_password']
+
+  # TODO hardcode or move to params?
+  $retention_period = '30'
+
+} else {
+
+  notice('Use StackLight integrated InfluxDB')
+
+  $influxdb_mode = 'local'
+
+  if !hiera('influxdb_grafana',false) {
+    fail(join([
+      'The StackLight InfluxDB-Grafana Plugin not found, ',
+      'please configure external InfluxDB in advanced settings or install the plugin'
+    ]))
   }
 
+  $influxdb_grafana = hiera('influxdb_grafana')
 
+  # influx ip
+  $influxdb_nodes = get_nodes_hash_by_roles($network_metadata, ['influxdb_grafana', 'primary-influxdb_grafana'])
+  $nodes_array = values($influxdb_nodes)
 
+  if count($nodes_array)==0 {
+    fail(join([
+      'No nodes with InfluxDB Grafana role, please add one or more nodes',
+      'with this role to the environment or configure external InfluxDB in advanced settings'
+    ]))
+  }
 
+  # TODO test for multiple inxlixdb nodes !!!
+  $influxdb_address = $nodes_array[0]['network_roles']['management']
+
+  $retention_period  = $influxdb_grafana['retention_period']
+  $influxdb_user     = $influxdb_grafana['influxdb_username']
+  $influxdb_password = $influxdb_grafana['influxdb_userpass']
+  $influxdb_port     = '8086'
+  $influxdb_database = 'ceilometer'
+  $influxdb_rootpass = $influxdb_grafana['influxdb_rootpass']
+
+}
 
 $calculated_content = inline_template('
 ---
@@ -87,6 +141,14 @@ telemetry::elasticsearch::server: <%= @es_server %>
 telemetry::elasticsearch::rest_port: 9200
 <% end -%>
 
+telemetry::influxdb::mode: <%= @influxdb_mode %>
+telemetry::influxdb::address: <%= @influxdb_address %>
+telemetry::influxdb::port: <%= @influxdb_port %>
+telemetry::influxdb::database: <%= @influxdb_database %>
+telemetry::influxdb::user: <%= @influxdb_user %>
+telemetry::influxdb::password: <%= @influxdb_password %>
+telemetry::influxdb::retention_period: <%= @retention_period %>
+telemetry::influxdb::rootpass: <%= @influxdb_rootpass %>
 
 ')
 

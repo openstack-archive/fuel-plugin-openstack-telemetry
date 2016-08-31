@@ -8,6 +8,9 @@
   version: 2.0.0
   requires: [globals]
   required_for: [logging]
+  # TODO we dont have access to influx hiera, need we dependency on it?
+  cross-depends:
+    - name: influxdb-hiera
   role: ['/.*/']
   parameters:
     puppet_manifest: "puppet/manifests/hiera.pp"
@@ -193,7 +196,20 @@
     timeout: 300
 
 
-- id: telemetry-hiera-post-deployment
+# - id: telemetry-hiera-post-deployment
+#   type: puppet
+#   version: 2.1.0
+#   groups: [primary-controller, controller]
+#   requires: [post_deployment_start]
+#   required_for: [post_deployment_end]
+#   cross-depends:
+#     - name: primary-influxdb_grafana
+#   parameters:
+#     puppet_manifest: puppet/manifests/hiera-post_deployment.pp
+#     puppet_modules: puppet/modules:/etc/puppet/modules
+#     timeout: 300
+
+- id: telemetry-influxdb-create-db
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
@@ -201,8 +217,12 @@
   required_for: [post_deployment_end]
   cross-depends:
     - name: primary-influxdb_grafana
+#    - name: lma-hiera-override
+#    - name: lma-aggregator
+#    - name: /(primary-)?cluster-haproxy/
+#      role: self
   parameters:
-    puppet_manifest: puppet/manifests/hiera-post_deployment.pp
+    puppet_manifest: puppet/manifests/configure-influxdb.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
@@ -214,23 +234,6 @@
   requires: [telemetry-influxdb-create-db]
   parameters:
     puppet_manifest: puppet/manifests/heka.pp
-    puppet_modules: puppet/modules:/etc/puppet/modules
-    timeout: 300
-
-- id: telemetry-influxdb-create-db
-  type: puppet
-  version: 2.1.0
-  groups: [primary-controller, controller]
-  requires: [post_deployment_start,telemetry-hiera-post-deployment]
-  required_for: [post_deployment_end]
-  cross-depends:
-    - name: primary-influxdb_grafana
-#    - name: lma-hiera-override
-#    - name: lma-aggregator
-#    - name: /(primary-)?cluster-haproxy/
-#      role: self
-  parameters:
-    puppet_manifest: puppet/manifests/configure-influxdb.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 

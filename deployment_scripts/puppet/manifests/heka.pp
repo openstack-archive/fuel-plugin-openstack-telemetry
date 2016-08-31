@@ -26,52 +26,12 @@ if hiera('telemetry::elasticsearch::server',false) {
   $elasticsearch_url = 'http://'
 }
 
-# Get influxdb (TODO) :move to hiera
+$influxdb_address  = hiera('telemetry::influxdb::address')
+$influxdb_port     = hiera('telemetry::influxdb::port')
+$influxdb_database = hiera('telemetry::influxdb::database')
+$influxdb_user     = hiera('telemetry::influxdb::user')
+$influxdb_password = hiera('telemetry::influxdb::password')
 
-  $telemetry = hiera('telemetry')
-
-  if $telemetry['influxdb_ip'] {
-
-    notice('Use External InfluxDB')
-
-    $influxdb_server = $telemetry['influxdb_ip']
-    # TODO get from parameters
-    $influxdb_port   = '8086'
-    $influx_user     = 'root'
-    $influx_password = 'r00tme'
-
-
-  } else {
-
-    notice('Use StackLight integrated InfluxDB')
-
-    if !hiera('influxdb_grafana',false) {
-      fail('The StackLight InfluxDB-Grafana Plugin not found,\
-       please configure external InfluxDB in advanced settings or install the plugin')
-    }
-
-    $influxdb_grafana = hiera('influxdb_grafana')
-
-    # influx ip
-    prepare_network_config(hiera_hash('network_scheme', {}))
-    $network_metadata = hiera_hash('network_metadata')
-    $influxdb_nodes = get_nodes_hash_by_roles($network_metadata, ['influxdb_grafana', 'primary-influxdb_grafana'])
-    $nodes_array = values($influxdb_nodes)
-
-    if count($nodes_array)==0 {
-      fail('No nodes with InfluxDB Grafana role, please add one or more nodes\
-       with this role to the environment or configure external InfluxDB in advanced settings')
-    }
-    # test for multiple inxlixdb nodes !!!
-    $influxdb_server = $nodes_array[0]['network_roles']['management']
-    #$influxdb_server = $influxdb_nodes[0]['internal_address']
-
-    # TODO get from Hiera
-    $influxdb_port   = '8086'
-    $influx_user     = 'root'
-    $influx_password = 'r00tme'
-
-  }
 
 ### Heka configuration
 
@@ -191,22 +151,3 @@ file {
     #provider => 'pacemaker',
     provider => 'upstart',
   }
-
-### Ceilometer config
-
-include ::ceilometer::params
-
-$metering_connection = "stacklight://${influx_user}:${influx_password}@${influxdb_server}:${influxdb_port}/ceilometer"
-ceilometer_config { 'database/metering_connection': value => $metering_connection }
-ceilometer_config { 'notification/store_events': value => false }
-
-Ceilometer_config<||> ~> Service['ceilometer-service']
-
-service { 'ceilometer-service':
-      ensure     => $service_ensure,
-      name       => $::ceilometer::params::api_service_name,
-      enable     => $enabled,
-      hasstatus  => true,
-      hasrestart => true,
-      tag        => 'ceilometer-service',
-}

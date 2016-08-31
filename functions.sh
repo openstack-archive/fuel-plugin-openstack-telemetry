@@ -42,9 +42,9 @@ function download_packages {
 
 # Download file and store it in the local directory
 function download_file {
-    URL=$1
-    FILE_NAME=$2
-    DESTINATION=$3
+    local URL=$1
+    local FILE_NAME=$2
+    local DESTINATION=$3
     mkdir -p $DESTINATION
     wget -qO $DESTINATION/$FILE_NAME $URL
 }

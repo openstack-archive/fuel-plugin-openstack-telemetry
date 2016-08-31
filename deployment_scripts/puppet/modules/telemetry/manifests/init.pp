@@ -32,12 +32,6 @@
 #   publishers          => $ceilometer_publishers,
 # }
 #
-#
-# === Copyright
-#
-# Copyright 2016 Mirantis Inc, unless otherwise noted.
-#
-
 
 class telemetry (
   $event_pipeline_file,
