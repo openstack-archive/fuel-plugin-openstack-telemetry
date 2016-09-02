@@ -13,6 +13,11 @@ download_packages \
     https://github.com/elemoine/heka/releases/download/ratelimit-1/heka_${HEKA_VERSION}_amd64.deb
 check_md5sum heka_${HEKA_VERSION}_amd64.deb 69514d94173181a8d1dcab769062fdac
 
+# Oslo messaging
+
+download_packages \
+    http://172.18.162.63/review/CR-23677/mos-repos/ubuntu/9.0/pool/main/p/python-oslo.messaging/python-oslo.messaging_4.6.1-3~u14.04%2bmos8_all.deb
+
 # Download Heka puppet module from lma collector plugin
 
 URL="https://github.com/openstack/fuel-plugin-lma-collector/archive/${COLLECTOR_TAG}.tar.gz"
