@@ -1,0 +1,8 @@
+Code-Review+2: Nadya Shakhat <nprivalova@mirantis.com>
+Workflow+1: Nadya Shakhat <nprivalova@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 02 Sep 2016 12:38:34 +0000
+Reviewed-on: https://review.openstack.org/360538
+Project: openstack/fuel-plugin-openstack-telemetry
+Branch: refs/heads/master
