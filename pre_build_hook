@@ -6,6 +6,21 @@ set -eux
 
 HEKA_VERSION="0.10.0"
 COLLECTOR_TAG="0.10.0"
+REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-2016-09-03-050322/pool/main/"
+
+# Hindsight packages
+
+download_packages \
+    $REPO_URL/h/hindsight/hindsight_0.9.0-1~ub14.04%2bmos2_amd64.deb \
+    $REPO_URL/libr/librdkafka/librdkafka1_0.9.1-1~ub14.04%2bmos1_amd64.deb \
+    $REPO_URL/l/lua-sandbox/libluasandbox1_1.0.3-5~ub14.04%2bmos1_amd64.deb \
+    $REPO_URL/l/lua-sandbox/libluasandbox-dev_1.0.3-5~ub14.04%2bmos1_amd64.deb \
+    $REPO_URL/l/lua-sandbox-extensions/lua-sandbox-extensions_0.0~git20160812.98065e76-1~ub14.04%2bmos3_amd64.deb
+
+# Oslo messaging
+
+download_packages \
+    $REPO_URL/p/python-oslo.messaging/python-oslo.messaging_4.6.1-3~u14.04%2bmos8_all.deb
 
 # Download Heka deb package
 

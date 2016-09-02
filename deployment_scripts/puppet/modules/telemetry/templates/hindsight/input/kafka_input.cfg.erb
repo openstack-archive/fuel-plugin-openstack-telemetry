@@ -1,0 +1,11 @@
+filename = "kafka_input.lua"                              
+brokerlist = <%= @brokerlist %>
+topics = {"metering.sample"}
+consumer_conf = {
+    ["group.id"] = "metric_collector",
+    ["message.max.bytes"] = 16024,
+}
+topic_conf = {}
+metadata_fields = "<%= @metadata_fields %>"
+instuction_limit = 0 
+ticker_interval = 60
