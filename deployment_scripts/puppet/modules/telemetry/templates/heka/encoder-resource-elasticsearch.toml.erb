@@ -1,7 +1,7 @@
 [elasticsearch_resource_encoder]
-type = "SandboxEncoder"
-filename = "/usr/share/heka/lua_modules/encoders/es_bulk.lua"
+type     = "SandboxEncoder"
+filename = "/usr/share/telemetry_lua_modules/encoders/es_ceilometer_resources.lua"
 
-    [elasticsearch_resource_encoder.config]
-	index = "ceilometer_resource"
-	type_name = "source"
+[elasticsearch_resource_encoder.config]
+index     = "ceilometer_resource"
+type_name = "source"
