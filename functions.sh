@@ -17,8 +17,8 @@ set -eux
 
 ROOT="$(dirname "$(readlink -f "$0")")"
 MODULES_DIR="${ROOT}"/deployment_scripts/puppet/modules
-RPM_REPO="${ROOT}"/repositories/centos/
-DEB_REPO="${ROOT}"/repositories/ubuntu/
+RPM_REPO="${ROOT}"/repositories/centos
+DEB_REPO="${ROOT}"/repositories/ubuntu
 
 function get_package_path {
     FILE=$(basename "$1")

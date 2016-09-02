@@ -1,0 +1,10 @@
+filename        = "influxdb_tcp.lua"
+host            = "<%= @influxdb_address %>"
+port            = <%= @influxdb_port %>
+database        = "<%= @influxdb_database %>"
+username        = "<%= @influxdb_user %>"
+password        = "<%= @influxdb_password %>"
+batch_max_lines = 5000
+message_matcher = "Fields[payload_name] == 'ceilometer'"
+ticker_interval = 1
+memory_limit    = 100 * 1024 * 1024
