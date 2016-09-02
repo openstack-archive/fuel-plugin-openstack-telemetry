@@ -1,6 +1,8 @@
 [sample_decoder]
 type = "SandboxDecoder"
-filename = "/usr/share/heka/lua_modules/decoders/metering.lua"
+filename = "/usr/share/telemetry_lua_modules/decoders/metering.lua"
+module_directory = "<%= @module_directory %>/common;/usr/share/heka/lua_modules"
+decoder_module = "ceilometer"
 
 [sample_decoder.config]
     metadata_fields = 'status deleted container_format min_ram updated_at min_disk is_public size checksum created_at disk_format protected instance_host host  display_name instance_id instance_type status state' 
