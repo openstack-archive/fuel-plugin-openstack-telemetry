@@ -1,0 +1,11 @@
+filename = "ceilometer_kafka.lua"                              
+brokerlist = "<%= @brokerlist %>"
+topics = {"metering.sample"}
+consumer_conf = {
+    ["group.id"] = "metric_collector",
+    ["message.max.bytes"] = 16024,
+}
+topic_conf = {}
+metadata_fields = "instance_host display_name name instance_type user_metadata.stack user_metadata.stack_name"
+instuction_limit = 0 
+ticker_interval = 60
