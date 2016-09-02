@@ -35,48 +35,6 @@ file {
   "${config_dir}/output-influxdb-samples.toml":            content => template( 'telemetry/heka/output-influxdb-samples.toml.erb' );
 }
 
-### Heka lua scripts
-
-$heka_dir    = '/usr/share/heka'
-$modules_dir = '/usr/share/heka/lua_modules'
-
-file {
-  $heka_dir:    ensure => 'directory';
-  $modules_dir: ensure => 'directory';
-}
-
-file {
-  "${modules_dir}/decoders": ensure => 'directory';
-  "${modules_dir}/encoders": ensure => 'directory';
-  "${modules_dir}/filters":  ensure => 'directory';
-}
-
-file {
-  "${modules_dir}/decoders/metering.lua":
-      source => 'puppet:///modules/telemetry/decoders/metering.lua'
-  ;
-  "${modules_dir}/encoders/es_bulk.lua":
-      source => 'puppet:///modules/telemetry/encoders/es_bulk.lua'
-  ;
-  "${modules_dir}/filters/influxdb_ceilometer_accumulator.lua":
-      source => 'puppet:///modules/telemetry/filters/influxdb_ceilometer_accumulator.lua'
-  ;
-}
-
-### Heka extra modules
-
-file {
-  "${modules_dir}/extra_fields.lua":
-      source => 'puppet:///modules/telemetry/extra_fields.lua'
-  ;
-  "${modules_dir}/lma_utils.lua":
-      source => 'puppet:///modules/telemetry/lma_utils.lua'
-  ;
-  "${modules_dir}/patterns.lua":
-      source => 'puppet:///modules/telemetry/patterns.lua'
-  ;
-}
-
 # Heka Installation
 
 $version            = hiera('telemetry::heka::version')
