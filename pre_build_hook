@@ -7,6 +7,15 @@ set -eux
 HEKA_VERSION="0.10.0"
 COLLECTOR_TAG="0.10.0"
 
+# Hindsight packages
+
+ download_packages \
+    http://172.18.162.63/mos-repos/ubuntu/9.0/pool/main/h/hindsight/hindsight_0.9.0-1~ub14.04%2bmos2_amd64.deb \
+    http://172.18.162.63/mos-repos/ubuntu/9.0/pool/main/libr/librdkafka/librdkafka1_0.9.1-1~ub14.04%2bmos1_amd64.deb \
+    http://172.18.162.63/mos-repos/ubuntu/9.0/pool/main/l/lua-sandbox/libluasandbox1_1.0.3-5~ub14.04%2bmos1_amd64.deb \
+    http://172.18.162.63/mos-repos/ubuntu/9.0/pool/main/l/lua-sandbox/libluasandbox-dev_1.0.3-5~ub14.04%2bmos1_amd64.deb \
+    http://172.18.162.63/mos-repos/ubuntu/9.0/pool/main/l/lua-sandbox-extensions/lua-sandbox-extensions_0.0~git20160812.98065e76-1~ub14.04%2bmos3_amd64.deb
+
 # Download Heka deb package
 
 download_packages \
