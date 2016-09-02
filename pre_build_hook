@@ -6,12 +6,48 @@ set -eux
 
 HEKA_VERSION="0.10.0"
 COLLECTOR_TAG="0.10.0"
+REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-2016-09-03-050322/pool/main"
+
+# Hindsight packages
+
+download_packages \
+    $REPO_URL/h/hindsight/hindsight_0.9.0-1~ub14.04%2bmos2_amd64.deb \
+    $REPO_URL/libr/librdkafka/librdkafka1_0.9.1-1~ub14.04%2bmos1_amd64.deb \
+    $REPO_URL/l/lua-sandbox/libluasandbox1_1.0.3-5~ub14.04%2bmos1_amd64.deb \
+    $REPO_URL/l/lua-sandbox/libluasandbox-dev_1.0.3-5~ub14.04%2bmos1_amd64.deb \
+    $REPO_URL/l/lua-sandbox-extensions/lua-sandbox-extensions_0.0~git20160812.98065e76-1~ub14.04%2bmos3_amd64.deb
+
+# Oslo messaging
+
+download_packages $REPO_URL/p/python-oslo.messaging/python-oslo-messaging_4.6.1-3~u14.04+mos9_all.deb
 
 # Download Heka deb package
 
 download_packages \
     https://github.com/elemoine/heka/releases/download/ratelimit-1/heka_${HEKA_VERSION}_amd64.deb
 check_md5sum heka_${HEKA_VERSION}_amd64.deb 69514d94173181a8d1dcab769062fdac
+
+# Lua scripts from lma-collector plugin
+# TODO use version 1.0 after release (not master)
+
+URL="https://github.com/openstack/fuel-plugin-lma-collector/archive/master.tar.gz"
+SCRIPT_PATH="fuel-plugin-lma-collector-master/deployment_scripts/puppet/modules/lma_collector/files/plugins"
+DESTINATION="deployment_scripts/puppet/modules/telemetry/files/import"
+TEMP_DIR=`mktemp -u`
+download_file $URL master.tar.gz $TEMP_DIR
+tar -xf $TEMP_DIR/master.tar.gz -C $TEMP_DIR --strip-components=7 $SCRIPT_PATH
+
+mkdir -p $DESTINATION/common/
+cp -f $TEMP_DIR/common/lma_utils.lua $DESTINATION/common/
+cp -f $TEMP_DIR/common/patterns.lua $DESTINATION/common/
+cp -f $TEMP_DIR/common/influxdb.lua $DESTINATION/common/
+cp -f $TEMP_DIR/common/accumulator.lua $DESTINATION/common/
+mkdir -p $DESTINATION/filters/
+cp -f $TEMP_DIR/filters/influxdb_accumulator.lua $DESTINATION/filters/
+mkdir -p $DESTINATION/encoders/
+cp -f $TEMP_DIR/encoders/es_ceilometer_resources.lua $DESTINATION/encoders/
+
+rm -fr $TEMP_DIR
 
 # Download Heka puppet module from lma collector plugin
 
