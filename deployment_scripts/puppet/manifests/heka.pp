@@ -22,6 +22,10 @@ $influxdb_password = hiera('telemetry::influxdb::password')
 
 ### Heka configuration
 
+File {
+  before     => Service['persister_collector']
+}
+
 file {
   "${config_dir}/amqp-openstack_sample.toml":              content => template( 'telemetry/heka/amqp-openstack_sample.toml.erb' );
   "${config_dir}/decoder-sample.toml":                     content => template( 'telemetry/heka/decoder-sample.toml.erb' );
@@ -86,7 +90,10 @@ $max_timer_inject   = hiera('telemetry::heka::max_timer_inject')
 $poolsize           = hiera('telemetry::heka::poolsize')
 
 # TODO we dont't need them on controller
-$install_init_script = true
+$install_init_script = false
+$user='root'
+
+user { $user: }
 
 ::heka { 'persister_collector':
   config_dir          => '/etc/persister_collector',
@@ -101,51 +108,48 @@ $install_init_script = true
   version             => $version,
 }
 
-#TODO enable pacemaker ?
-# pacemaker::service { 'persister_collector':
-#   ensure           => present,
-#   prefix           => false,
-#   primitive_class  => 'ocf',
-#   primitive_type   => 'ocf-lma_collector',
-#   use_handler      => false,
-#   complex_type     => 'clone',
-#   complex_metadata => {
-#     # the resource should start as soon as the dependent resources
-#     # (eg RabbitMQ) are running *locally*
-#     'interleave' => true,
-#   },
-#   metadata         => {
-#     # Make sure that Pacemaker tries to restart the resource if it fails
-#     # too many times
-#     'failure-timeout'     => '120s',
-#     'migration-threshold' => '3',
-#   },
-#   parameters       => {
-#     'service_name' => 'persister_collector',
-#     'config'       => '/etc/persister_collector',
-#     'log_file'     => '/var/log/persister_collector.log',
-#     'user'         => $user,
-#   },
-#   operations       => {
-#     'monitor' => {
-#       'interval' => '20',
-#       'timeout'  => '10',
-#     },
-#     'start'   => {
-#       'timeout' => '30',
-#     },
-#     'stop'    => {
-#       'timeout' => '30',
-#     },
-#   },
-# #   require          => Lma_collector::Heka['log_collector'],
-# }
+# Heka pacemaker config
+
+pacemaker::service { 'persister_collector':
+  ensure           => present,
+  prefix           => false,
+  primitive_class  => 'ocf',
+  primitive_type   => 'ocf-telemetry',
+  use_handler      => false,
+  complex_type     => 'clone',
+  complex_metadata => {
+    # the resource should start as soon as the dependent resources
+    # (eg RabbitMQ) are running *locally*
+    'interleave' => true,
+  },
+  metadata         => {
+    # Make sure that Pacemaker tries to restart the resource if it fails
+    # too many times
+    'failure-timeout'     => '120s',
+    'migration-threshold' => '3',
+  },
+  parameters       => {
+    'service_name' => 'persister_collector',
+    'config'       => '/etc/persister_collector',
+    'log_file'     => '/var/log/persister_collector.log',
+    'user'         => $user,
+  },
+  operations       => {
+    'monitor' => {
+      'interval' => '20',
+      'timeout'  => '10',
+    },
+    'start'   => {
+      'timeout' => '30',
+    },
+    'stop'    => {
+      'timeout' => '30',
+    },
+  },
+}
 
 service { 'persister_collector':
   ensure   => 'running',
-  #ensure   => 'stopped',
   enable   => true,
-  #provider => 'pacemaker',
-  provider => 'upstart',
+  provider => 'pacemaker',
 }
-

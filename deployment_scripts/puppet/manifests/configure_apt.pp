@@ -17,7 +17,6 @@ notice('fuel-plugin-lma-collector: configure_apt.pp')
 $str = 'APT::Install-Suggests "0";
 APT::Install-Recommends "0";
 '
-
 case $::osfamily {
     'Debian': {
         file { '/etc/apt/apt.conf.d/99norecommends':
@@ -30,19 +29,14 @@ case $::osfamily {
     }
 }
 
-# TODO enable roles detection in hiera
-#$node_profiles   = hiera_hash('lma::collector::node_profiles')
-#if $node_profiles['controller'] or $node_profiles['rabbitmq'] or $node_profiles['mysql'] {
-if true {
-  # The OCF script should exist before any node tries to configure the
-  # collector services with Pacemaker. This is why it is shipped by this
-  # manifest.
-  file { 'ocf-lma_collector':
-    ensure => present,
-    source => 'puppet:///modules/telemetry/ocf-lma_collector',
-    path   => '/usr/lib/ocf/resource.d/fuel/ocf-lma_collector',
-    mode   => '0755',
-    owner  => 'root',
-    group  => 'root',
-  }
+# The OCF script should exist before any node tries to configure the
+# collector services with Pacemaker. This is why it is shipped by this
+# manifest.
+file { 'ocf-telemetry':
+  ensure => present,
+  source => 'puppet:///modules/telemetry/ocf-telemetry',
+  path   => '/usr/lib/ocf/resource.d/fuel/ocf-telemetry',
+  mode   => '0755',
+  owner  => 'root',
+  group  => 'root',
 }
