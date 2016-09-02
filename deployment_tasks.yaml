@@ -229,14 +229,36 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
-- id: telemetry-heka
+- id: telemetry-lua-scripts
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
   required_for: [post_deployment_end]
   requires: [telemetry-influxdb-create-db]
   parameters:
+    puppet_manifest: puppet/manifests/lua-scripts.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
+- id: telemetry-heka
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end]
+  requires: [telemetry-lua-scripts]
+  parameters:
     puppet_manifest: puppet/manifests/heka.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
+- id: telemetry-hindsight
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end]
+  requires: [telemetry-heka]
+  parameters:
+    puppet_manifest: puppet/manifests/hindsight.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
