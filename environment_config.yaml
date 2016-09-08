@@ -6,99 +6,205 @@ attributes:
   advanced_settings:
     label: "Advanced settings"
     value: false
-    description: "The plugin determines the best settings if not set"
+    description: "Ceilometer Event API and Resource API are disabled if not set"
     weight: 10
     type: checkbox
+    restrictions:
+      - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
+        action: none
+        message: "The StackLight InfluxDB-Grafana plugin must be installed and enabled. Or use InfluxDB in 'remote' mode"
+      - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true)
+                     and (settings:telemetry.event_api.value == true or settings:telemetry.resource_api.value == true)"
+        action: none
+        message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'remote' mode"
+
+  event_api:
+    label: "Enable Ceilometer Event API"
+    value: false
+    description: "Enable Ceilometer Event API with Elasticsearch as a backend"
+    weight: 11
+    type: checkbox
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) and settings:telemetry.event_api.value == true"
+        action: none
+        message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'remote' mode"
+
+  resource_api:
+    label: "Enable Ceilometer Resource API"
+    value: false
+    description: "Enable Ceilometer Resource API with Elasticsearch as a backend"
+    weight: 12
+    type: checkbox
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) and settings:telemetry.resource_api.value == true"
+        action: none
+        message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'remote' mode"
+
+  elasticsearch_mode:
+    type: "radio"
+    value: 'local'
+    weight: 20
+    label: 'Elasticsearch mode'
+    values:
+      - data: "local"
+        label: "Use local Elasticsearch"
+        description: "The ElasticSearch installed via The StackLight Elasticsearch-Kibana plugin will be used if set"
+        restrictions:
+          - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true)"
+            action: disable
+            message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'external' mode"
+      - data: "remote"
+        label: "Use External Elasticsearch"
+        description: "'external' ElasticSearch will be used if set"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
 
   elastic_search_ip:
     value: ''
-    label: 'External Elasticsearch'
-    description: "In case you want to use external Elasticsearch please specify an IP or DNS name here"
-    weight: 20
-    type: "text"
-#    regex:
-#      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
-#      error: "Invalid address or name."
-    restrictions:
-      - condition: "settings:telemetry.advanced_settings.value == false"
-        action: hide
-
-  elastic_search_port:
-    value: '9200'
-    label: 'External Elasticsearch port'
-    description: "In case you want to use external Elasticsearch please specify the port number. Default is 9200"
+    label: 'External ElasticSearch IP or DNS name'
+    description: "In case you want to use an external Elasticsearch please specify an IP or a DNS name here"
     weight: 30
-    type: "text"
-    regex:
-      source: '^\d{0,5}$'
-      error: "You must provide a valid port number"
-    restrictions:
-      - condition: "settings:telemetry.advanced_settings.value == false"
-        action: hide
-
-  influxdb_address:
-    value: ''
-    label: 'External InfluxDB'
-    description: "In case you want to use external InfluxDB please spesify an IP or DNS name here"
-    weight: 40
     type: "text"
     regex:
       source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
       error: "Invalid address or name."
     restrictions:
+      - condition: "settings:telemetry.elasticsearch_mode.value == 'local'"
+        action: disable
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
 
-  influxdb_port:
-    value: '8086'
-    label: 'External InfluxDB port'
-    description: "In case you want to use external InfluxDB please spesify the port number. DEFAULT is 8086"
-    weight: 50
+
+  elastic_search_port:
+    value: '9200'
+    label: 'External Elasticsearch port'
+    description: "In case you want to use an external Elasticsearch please specify a port number. Default is 9200"
+    weight: 40
     type: "text"
     regex:
       source: '^\d{0,5}$'
       error: "You must provide a valid port number"
     restrictions:
+      - condition: "settings:telemetry.elasticsearch_mode.value == 'local'"
+        action: disable
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
+  influxdb_mode:
+    type: "radio"
+    value: 'local'
+    weight: 50
+    label: 'InfluxDB mode'
+    values:
+      - data: 'local'
+        label: "Use local InfluxDB"
+        description: "The InfluxDB installed via The StackLight InfluxDB-Grafana plugin will be used if set"
+        restrictions:
+          - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
+            action: disable
+            message: "The StackLight InfluxDB-Grafana plugin must be installed and enabled. Or use InfluxDB 'External' option below"
+      - data: 'remote'
+        label: "Use External InfluxDB"
+        description: "'external' InfluxDB will be used if set"
+
+  influxdb_address:
+    value: ''
+    label: 'External InfluxDB'
+    description: "In case you want to use a remote InfluxDB please spesify an IP or a DNS name here"
+    weight: 51
+    type: "text"
+    regex:
+      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
+      error: "Invalid address or name"
+    restrictions:
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
+
+  influxdb_port:
+    value: '8086'
+    label: 'External InfluxDB port'
+    description: "In case you want to use a remote InfluxDB please spesify a port number. DEFAULT is 8086"
+    weight: 52
+    type: "text"
+    regex:
+      source: '^\d{0,5}$'
+      error: "You must provide a valid port number"
+    restrictions:
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_database:
     value: 'ceilometer'
     label: 'InfluxDB database name'
     description: ''
-    weight: 60
+    weight: 53
     type: "text"
     regex: &not_empty_parameter
       source: '\S'
       error: "Invalid value"
     restrictions:
-      - condition: "settings:telemetry.advanced_settings.value == false"
-        action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_user:
     value: ''
     label: 'External InfluxDB user'
     description: "The username to access external InfluxDB"
-    weight: 90
+    weight: 54
     type: "text"
     regex:
       source: '\S'
-      error: "You must provide a username."
+      error: "You must provide a username"
     restrictions:
-      - condition: "settings:telemetry.advanced_settings.value == false"
-        action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_password:
     value: ''
     label: 'External InfluxDB password'
-    description: "The password to access external InfluxDB."
-    weight: 100
+    description: "The password to access external InfluxDB"
+    weight: 55
     type: "password"
     regex:
       source: '^[\S]{4,}$'
       error: "You must provide a password with at least 4 characters"
     restrictions:
-      - condition: "settings:telemetry.advanced_settings.value == false"
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
+
+  metadata_ceilo:
+    type: "radio"
+    value: 'yes'
+    weight: 60
+    label: 'Metadata for Ceilometer samples'
+    values:
+      - data: 'yes'
+        label: "yes"
+        description: ""
+      - data: 'no'
+        label: "no"
+        description: ""
+
+  metadata_fields:
+    value: 'status deleted container_format min_ram updated_at
+            min_disk is_public size checksum created_at disk_format
+            protected instance_host host  display_name instance_id
+            instance_type status state'
+    label: 'metadata_fields'
+    description: 'Please specify all needed metadata you want to be kept along with Ceilometer samples. This field is very important if you are going to do metadata-based Ceilometer queries'
+    weight: 61
+    type: "text"
+    restrictions:
+      - condition: "settings:telemetry.metadata_ceilo.value == 'no'"
         action: hide
-
-
