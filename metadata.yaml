@@ -1,7 +1,7 @@
 # Plugin name
 name: telemetry
 # Human-readable name for your plugin (TODO)
-title: The telemetry plugin for StackLight integration
+title: The Telemetry Plugin for StackLight
 # Plugin version
 version: '0.1.0'
 # Description
