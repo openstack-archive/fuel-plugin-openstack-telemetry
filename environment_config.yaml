@@ -9,29 +9,114 @@ attributes:
     description: "The plugin determines the best settings if not set"
     weight: 10
     type: checkbox
+    restrictions:
+      - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
+        action: none
+        message: "The influxdb_grafana plugin must be installed and enabled. Or use InfluxDB mode 'remote' please "
+      - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) 
+                     and (settings:telemetry.event_api.value == true or settings:telemetry.resource_api.value == true)"
+        action: none
+        message: "The elasticsearch_kibana plugin must be installed and enabled. Or use elasticsearch_kibana mode 'remote' please"
 
-  elastic_search_ip:
-    value: ''
-    label: 'External Elasticsearch'
-    description: "In case you want to use external Elasticsearch please specify an IP or DNS name here"
-    weight: 20
-    type: "text"
-#    regex:
-#      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
-#      error: "Invalid address or name."
+  event_api:
+    label: "Enable Event API"
+    value: false
+    description: "Envent API to use in ElasticSearch"
+    weight: 11
+    type: checkbox
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) and settings:telemetry.event_api.value == true"
+        action: none
+        message: "The elasticsearch_kibana plugin must be installed and enabled. Or use elasticsearch_kibana mode 'remote' please"
+
+  resource_api:
+    label: "Enable Resource API"
+    value: false
+    description: "Resource API to use in ElasticSearch"
+    weight: 12
+    type: checkbox
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) and settings:telemetry.resource_api.value == true"
+        action: none
+        message: "The elasticsearch_kibana plugin must be installed and enabled. Or use elasticsearch_kibana mode 'remote' please "
+
+  elastic_search_mode:
+    type: "radio"
+    value: 'local'
+    weight: 20
+    label: 'Elasticsearch mode'
+    values:
+      - data: "local"
+        label: "Use local Elasticsearch"
+        description: "The ElasticSearch installed via plugin will be used on current environment if set"
+        restrictions:
+          - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true)"
+            action: disable
+            message: "The elasticsearch_kibana plugin must be installed and enabled. Or use elasticsearch_kibana mode 'remote' please "
+      - data: "remote"
+        label: "Use External Elasticsearch"
+        description: "'external' ElasticSearch will be used if set"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
+  elastic_search_ip:
+    value: ''
+    label: 'External ElasticSearch IP or DNS name'
+    description: "In case you want to use external Elasticsearch please specify an IP or DNS name here"
+    weight: 30
+    type: "text"
+    regex:
+      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
+      error: "Invalid address or name."
+    restrictions:
+      - condition: "settings:telemetry.elastic_search_mode.value == 'local'"
+        action: disable
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
 
   elastic_search_port:
     value: '9200'
     label: 'External Elasticsearch port'
     description: "In case you want to use external Elasticsearch please specify the port number. Default is 9200"
-    weight: 30
+    weight: 40
     type: "text"
     regex:
       source: '^\d{0,5}$'
       error: "You must provide a valid port number"
+    restrictions:
+      - condition: "settings:telemetry.elastic_search_mode.value == 'local'"
+        action: disable
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
+  influxdb_mode:
+    type: "radio"
+    value: 'local'
+    weight: 50
+    label: 'InfluxDB mode'
+    values:
+      - data: "local"
+        label: "Use local InfluxDB"
+        description: "The InfluxDB installed via plugin will be used on current environment if set"
+        restrictions:
+          - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
+            action: disable
+            message: "The influxdb_grafana plugin must be installed and enabled. Or use 'remote' option below please"
+      - data: "remote"
+        label: "Use External InfluxDB"
+        description: "'external' InfluxDB will be used if set"
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
@@ -40,7 +125,7 @@ attributes:
     value: ''
     label: 'External InfluxDB'
     description: "In case you want to use external InfluxDB please spesify an IP or DNS name here"
-    weight: 40
+    weight: 51
     type: "text"
     regex:
       source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
@@ -48,12 +133,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_port:
     value: '8086'
     label: 'External InfluxDB port'
     description: "In case you want to use external InfluxDB please spesify the port number. DEFAULT is 8086"
-    weight: 50
+    weight: 52
     type: "text"
     regex:
       source: '^\d{0,5}$'
@@ -61,12 +148,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_database:
     value: 'ceilometer'
     label: 'InfluxDB database name'
     description: ''
-    weight: 60
+    weight: 53
     type: "text"
     regex: &not_empty_parameter
       source: '\S'
@@ -74,12 +163,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_user:
     value: ''
     label: 'External InfluxDB user'
     description: "The username to access external InfluxDB"
-    weight: 90
+    weight: 54
     type: "text"
     regex:
       source: '\S'
@@ -87,12 +178,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_password:
     value: ''
     label: 'External InfluxDB password'
     description: "The password to access external InfluxDB."
-    weight: 100
+    weight: 55
     type: "password"
     regex:
       source: '^[\S]{4,}$'
@@ -100,5 +193,19 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
 
+  metadata_fields:
+    value: 'status deleted container_format min_ram updated_at
+            min_disk is_public size checksum created_at disk_format
+            protected instance_host host  display_name instance_id
+            instance_type status state'
+    label: 'metadata_fields'
+    description: 'TODO: description- metadata_fields is very cool thing.'
+    weight: 60
+    type: "text"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
