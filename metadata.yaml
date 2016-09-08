@@ -1,11 +1,11 @@
 # Plugin name
 name: telemetry
 # Human-readable name for your plugin (TODO)
-title: The telemetry plugin for StackLight integration
+title: The OpenStack Telemetry Plugin
 # Plugin version
-version: '0.1.0'
+version: '1.0.0'
 # Description
-description: Deploy/configure Ceilometer and Aodh with StackLight
+description: Deploy/configure Ceilometer and Aodh with InfluxDB and Elasticsearch backends
 # Required fuel version
 fuel_version: ['9.0']
 # Specify license of your plugin
