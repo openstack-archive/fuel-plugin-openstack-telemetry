@@ -10,37 +10,102 @@ attributes:
     weight: 10
     type: checkbox
 
-  elastic_search_ip:
-    value: ''
-    label: 'External Elasticsearch'
-    description: "In case you want to use external Elasticsearch please specify an IP or DNS name here"
-    weight: 20
-    type: "text"
-#    regex:
-#      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
-#      error: "Invalid address or name."
+  event_api:
+    label: "Enable Event API"
+    value: false
+    description: "TODO: Some very important text should be placed here"
+    weight: 11
+    type: checkbox
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+
+  resource_api:
+    label: "Enable Resource API"
+    value: false
+    description: "TODO: Some very important text should be placed here"
+    weight: 12
+    type: checkbox
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+
+  elastic_search_mode:
+    type: "radio"
+    value: 'local'
+    weight: 20
+    label: 'Elasticsearch mode'
+    values:
+      - data: "local"
+        label: "Use local Elasticsearch"
+        description: "TODO: add some text here if needed"
+      - data: "remote"
+        label: "Use External Elasticsearch"
+        description: "TODO: add some text here if needed"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
+  elastic_search_ip:
+    value: ''
+    label: 'External ElasticSearch IP or DNS name'
+    description: "In case you want to use external Elasticsearch please specify an IP or DNS name here"
+    weight: 30 
+    type: "text"
+    regex:
+      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
+      error: "Invalid address or name."
+    restrictions:
+      - condition: "settings:telemetry.elastic_search_mode.value == 'local'"
+        action: disable
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
 
   elastic_search_port:
     value: '9200'
     label: 'External Elasticsearch port'
     description: "In case you want to use external Elasticsearch please specify the port number. Default is 9200"
-    weight: 30
+    weight: 40
     type: "text"
     regex:
       source: '^\d{0,5}$'
       error: "You must provide a valid port number"
     restrictions:
+      - condition: "settings:telemetry.elastic_search_mode.value == 'local'"
+        action: disable
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+        action: disable
+
+  influxdb_mode:
+    type: "radio"
+    value: 'local'
+    weight: 50
+    label: 'InfluxDB mode'
+    values:
+      - data: "local"
+        label: "Use local InfluxDB"
+        description: "TODO: add some text here if needed"
+      - data: "remote"
+        label: "Use External InfluxDB"
+        description: "TODO: add some text here if needed"
+    restrictions:
+      - condition: "settings:telemetry.advanced_settings.value == false"
+        action: hide
+#      - condition: "(settings:telemetry.event_api.value == false) and (settings:telemetry.resource_api.value == false)"
+#        action: hide
 
   influxdb_address:
     value: ''
     label: 'External InfluxDB'
     description: "In case you want to use external InfluxDB please spesify an IP or DNS name here"
-    weight: 40
+    weight: 51
     type: "text"
     regex:
       source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+$'
@@ -48,12 +113,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_port:
     value: '8086'
     label: 'External InfluxDB port'
     description: "In case you want to use external InfluxDB please spesify the port number. DEFAULT is 8086"
-    weight: 50
+    weight: 52
     type: "text"
     regex:
       source: '^\d{0,5}$'
@@ -61,12 +128,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_database:
     value: 'ceilometer'
     label: 'InfluxDB database name'
     description: ''
-    weight: 60
+    weight: 53
     type: "text"
     regex: &not_empty_parameter
       source: '\S'
@@ -74,12 +143,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_user:
     value: ''
     label: 'External InfluxDB user'
     description: "The username to access external InfluxDB"
-    weight: 90
+    weight: 54
     type: "text"
     regex:
       source: '\S'
@@ -87,12 +158,14 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
   influxdb_password:
     value: ''
     label: 'External InfluxDB password'
     description: "The password to access external InfluxDB."
-    weight: 100
+    weight: 55
     type: "password"
     regex:
       source: '^[\S]{4,}$'
@@ -100,5 +173,7 @@ attributes:
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
         action: hide
+      - condition: "settings:telemetry.influxdb_mode.value == 'local'"
+        action: disable
 
 
