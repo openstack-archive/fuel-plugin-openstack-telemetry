@@ -64,52 +64,52 @@ meta_data() {
     cat <<END
 <?xml version="1.0"?>
 <!DOCTYPE resource-agent SYSTEM "ra-api-1.dtd">
-<resource-agent name="lma_collector">
+<resource-agent name="telemetry_collector">
 <version>1.0</version>
 
 <longdesc lang="en">
-Manages the LMA collector daemon as a Pacemaker Resource.
+Manages the Telemetry daemon as a Pacemaker Resource.
 </longdesc>
-<shortdesc lang="en">Manages Log or Metric collector</shortdesc>
+<shortdesc lang="en">Manages Telemetry collector</shortdesc>
 <parameters>
 
 <parameter name="service_name" unique="0" required="1">
 <longdesc lang="en">
-Name of the collector service.
+Name of the telemetry service.
 </longdesc>
-<shortdesc lang="en">Collector service name</shortdesc>
+<shortdesc lang="en">Telemetry service name</shortdesc>
 <content type="string" />
 </parameter>
 
 <parameter name="binary" unique="0" required="0">
 <longdesc lang="en">
-Path of the LMA collector binary file that will be run.
+Path of the Telemetry collector binary file that will be run.
 </longdesc>
-<shortdesc lang="en">LMA collector binary file</shortdesc>
+<shortdesc lang="en">Telemetry collector binary file</shortdesc>
 <content type="string" default="${OCF_RESKEY_binary_default}" />
 </parameter>
 
 <parameter name="config" unique="0" required="1">
 <longdesc lang="en">
-Path to the LMA collector configuration file or directory
+Path to the Telemetry collector configuration file or directory
 </longdesc>
-<shortdesc lang="en">LMA collector configuration</shortdesc>
+<shortdesc lang="en">Telemetry collector configuration</shortdesc>
 <content type="string" />
 </parameter>
 
 <parameter name="log_file" unique="0" required="1">
 <longdesc lang="en">
-Path to the LMA collector log file
+Path to the Telemetry collector log file
 </longdesc>
-<shortdesc lang="en">LMA collector log file</shortdesc>
+<shortdesc lang="en">Telemetry collector log file</shortdesc>
 <content type="string" />
 </parameter>
 
 <parameter name="user" unique="0" required="0">
 <longdesc lang="en">
-User running the LMA collector process
+User running the Telemetry collector process
 </longdesc>
-<shortdesc lang="en">LMA collector user</shortdesc>
+<shortdesc lang="en">Telemetry collector user</shortdesc>
 <content type="string" default="${OCF_RESKEY_user_default}" />
 </parameter>
 
@@ -117,7 +117,7 @@ User running the LMA collector process
 <longdesc lang="en">
 The file to monitor that the process is up and running
 </longdesc>
-<shortdesc lang="en">LMA collector watchdog file</shortdesc>
+<shortdesc lang="en">Telemetry collector watchdog file</shortdesc>
 <content type="string" default="${OCF_RESKEY_watchdog_file_default}" />
 </parameter>
 
@@ -126,7 +126,7 @@ The file to monitor that the process is up and running
 How much time the watchdog file can be left unmodified before claiming that
 the process is unresponsive.
 </longdesc>
-<shortdesc lang="en">LMA collector watchdog timeout</shortdesc>
+<shortdesc lang="en">Telemetry collector watchdog timeout</shortdesc>
 <content type="string" default="${OCF_RESKEY_watchdog_timeout_default}" />
 </parameter>
 
@@ -184,7 +184,7 @@ service_status() {
     fi
 
     if [ ! -f "$PID_FILE" ]; then
-        ocf_log info "LMA collector is not running"
+        ocf_log info "Telemetry collector is not running"
         return "$OCF_NOT_RUNNING"
     else
         pid=$(cat "$PID_FILE")
@@ -194,7 +194,7 @@ service_status() {
         ocf_run -warn kill -s 0 "$pid"
         rc=$?
         if [ $rc -ne 0 ]; then
-            ocf_log info "Old PID file found, but LMA collector process isn't running"
+            ocf_log info "Old PID file found, but Telemetry collector isn't running"
             return "$OCF_NOT_RUNNING"
         fi
     else
