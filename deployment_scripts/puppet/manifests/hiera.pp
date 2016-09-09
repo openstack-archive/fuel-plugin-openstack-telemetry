@@ -119,6 +119,9 @@ $rabbit_user = $rabbit_info['user']
 $amqp_host = hiera('amqp_hosts')
 $amqp_url = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}/"
 
+$metadata_fields   = join(['status deleted container_format min_ram updated_at ',
+  'min_disk is_public size checksum created_at disk_format protected instance_host ',
+  'host  display_name instance_id instance_type status state'])
 
 $calculated_content = inline_template('
 ---
@@ -159,6 +162,9 @@ telemetry::heka::poolsize: 100
 telemetry::heka::config_dir: "/etc/telemetry-collector"
 
 telemetry::rabbit::url: "<%= @amqp_url %>"
+
+telemetry::metadata_fields: "<%= @metadata_fields %>"
+telemetry::lua::modules_dir: "/usr/share/telemetry_lua_modules"
 
 ')
 

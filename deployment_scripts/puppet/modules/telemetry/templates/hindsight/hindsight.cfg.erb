@@ -7,7 +7,7 @@ backpressure           = 25
 output_path            = "<%= @output_dir %>"
 sandbox_load_path      = "<%= @hindsight_dir %>/load"
 sandbox_run_path       = "<%= @hindsight_dir %>/run"
-analysis_lua_path      = "<%= @sandbox_dir %>/modules/?.lua;<%= @sandbox_dir %>/modules/lpeg/?.lua;/usr/share/telemetry_lua_modules/common/?.lua"
+analysis_lua_path      = "<%= @sandbox_dir %>/modules/?.lua;<%= @sandbox_dir %>/modules/lpeg/?.lua;<%= @modules_dir %>/common/?.lua"
 analysis_lua_cpath     = "<%= @sandbox_dir %>/modules/?.so"
 io_lua_path            = analysis_lua_path ..  ";<%= @sandbox_dir %>/io_modules/?.lua"
 io_lua_cpath           = analysis_lua_cpath .. ";<%= @sandbox_dir %>/?.so"

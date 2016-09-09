@@ -1,7 +1,7 @@
 [ceilometer_influxdb_accumulator_filter]
 type = "SandboxFilter"
-filename = "/usr/share/telemetry_lua_modules/filters/influxdb_accumulator.lua"
-module_directory = "<%= @module_directory %>/common;/usr/share/heka/lua_modules"
+filename = "<%= @modules_dir %>/filters/influxdb_accumulator.lua"
+module_directory = "<%= @modules_dir %>/common;/usr/share/heka/lua_modules"
 preserve_data = false
 message_matcher = "Fields[aggregator] == NIL && Type =~ /sample.bulk_metric$/"
 ticker_interval = 1
