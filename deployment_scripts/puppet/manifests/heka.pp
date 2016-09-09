@@ -1,8 +1,10 @@
 
 ## Get values
 
-$config_dir = hiera('telemetry::heka::config_dir')
-$amqp_url   = hiera('telemetry::rabbit::url')
+$config_dir      = hiera('telemetry::heka::config_dir')
+$amqp_url        = hiera('telemetry::rabbit::url')
+$metadata_fields = hiera('telemetry::metadata_fields')
+
 
 if hiera('telemetry::elasticsearch::server',false) {
   $ip = hiera('telemetry::elasticsearch::server')

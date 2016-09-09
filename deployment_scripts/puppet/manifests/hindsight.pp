@@ -8,11 +8,7 @@ $influxdb_port     = hiera('telemetry::influxdb::port')
 $influxdb_database = hiera('telemetry::influxdb::database')
 $influxdb_user     = hiera('telemetry::influxdb::user')
 $influxdb_password = hiera('telemetry::influxdb::password')
-# TDOD field in UI, add in hiera.pp
-$metadata_fields   = join(['status deleted container_format min_ram updated_at ',
-  'min_disk is_public size checksum created_at disk_format protected instance_host ',
-  'host  display_name instance_id instance_type status state'])
-#hiera('telemetry::metadata_fields')
+$metadata_fields   = hiera('telemetry::metadata_fields')
 # TODO settings/hiera
 $topics            = 'metering.sample'
 
