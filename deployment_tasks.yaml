@@ -197,7 +197,7 @@
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
-  requires: [post_deployment_start,telemetry-ceilometer-controller]
+  requires: [post_deployment_start,telemetry-hiera,telemetry-ceilometer-controller]
   required_for: [post_deployment_end]
 #  required_for: [deploy_end]
 #  requires: [deploy_start, telemetry-ceilometer-controller]
@@ -233,6 +233,7 @@
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
+  role: [primary-controller, controller, kafka, primary-kafka]
   required_for: [post_deployment_end]
   requires: [telemetry-influxdb-create-db]
   parameters:
@@ -245,7 +246,7 @@
   version: 2.1.0
   groups: [primary-controller, controller]
   required_for: [post_deployment_end]
-  requires: [telemetry-lua-scripts]
+  requires: [telemetry-influxdb-create-db]
   parameters:
     puppet_manifest: puppet/manifests/heka.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
@@ -256,7 +257,8 @@
   version: 2.1.0
   groups: [primary-controller, controller]
   required_for: [post_deployment_end]
-  requires: [telemetry-heka]
+  role: [primary-kafka, kafka]
+  requires: [telemetry-influxdb-create-db, telemetry-hiera]
   parameters:
     puppet_manifest: puppet/manifests/hindsight.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
