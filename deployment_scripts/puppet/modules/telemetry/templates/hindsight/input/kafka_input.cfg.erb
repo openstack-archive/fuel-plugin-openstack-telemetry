@@ -1,5 +1,11 @@
 filename         = "kafka_input.lua"
-brokerlist       = <%= @brokerlist %>
+<%
+   #brokers = @brokerlist.join(':9200", "')
+   brokers = @brokerlist.join(":#{@kafka_port}\", \"")
+   #brokers = '"'+brokers+':9200"'
+   brokers = '"'+brokers+":#{@kafka_port}\""
+-%>
+brokerlist       = {<%= brokers %>}
 topics           = {"<%= @topics %>"}
 consumer_conf    = {
     ["group.id"]          = "telemetry_collector",

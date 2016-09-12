@@ -75,6 +75,26 @@ service { 'ceilometer-collector':
     hasstatus => true,
 }
 
+# Kafka integration
+
+if hiera('telemetry::kafka::enabled') {
+
+  ceilometer_config { 'oslo_messaging_kafka/consumer_group': value => 'cailometer' }
+  ceilometer_config { 'oslo_messaging_kafka/kafka_max_fetch_bytes': value => '3000000' }
+  ceilometer_config { 'oslo_messaging_kafka/producer_batch_size': value => '3000000' }
+
+  $kafka_ips = hiera('telemetry::kafka::broker_list')
+  $kafka_url = "kafka://${kafka_ips}"
+  $rabbit_url = hiera('telemetry::rabbit::url')
+
+  ceilometer_config { 'DEFAULT/transport_url': value => $kafka_url }
+  ceilometer_config { 'notification/messaging_urls': value => [$kafka_url,$rabbit_url] }
+  ceilometer_config { 'oslo_messaging_notifications/transport_url': value => $kafka_url }
+
+  ceilometer_config { 'compute/resource_update_interval': value => 600 }
+
+}
+
 # TODO validate values before proceed
 
 ceilometer_config { 'database/metering_connection': value => $metering_connection }

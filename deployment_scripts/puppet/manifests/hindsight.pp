@@ -12,8 +12,9 @@ $metadata_fields   = hiera('telemetry::metadata_fields')
 # TODO settings/hiera
 $topics            = 'metering.sample'
 
-#TODO kafka integration
-$brokerlist = '"broker1:9092"'
+# Kafka integration
+$brokerlist = hiera('telemetry::kafka::nodes_list')
+$kafka_port = hiera('telemetry::kafka::port')
 
 # Install packages
 
@@ -23,6 +24,12 @@ package { 'hindsight': }
 package { 'librdkafka1': }
 package { 'lua-sandbox-extensions': }
 package { 'python-oslo.messaging': }
+package { 'python-pip': }
+
+package { "kafka-python":
+  ensure   => '1.2.5',
+  provider => "pip"
+}
 
 # User/group
 
@@ -81,12 +88,13 @@ file {  '/etc/telemetry_hindsight/hindsight.cfg':
 }
 
 # Templates
+# TODO unhardkode kafka port
 
 $configs = {
   "${run_dir}/output/influxdb_ceilometer.cfg" => {
     content => template( "${templates}/output/influxdb_ceilometer.cfg.erb"),
   },
-  "${run_dir}/input/ceilometer_kafka.cfg" => {
+  "${run_dir}/input/kafka_input.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
   }
 }
