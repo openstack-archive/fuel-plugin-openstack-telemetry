@@ -1,6 +1,8 @@
 
 notice('MODULAR: fuel-plugin-telemetry: hindsight.pp')
 
+$plugin_data       = hiera_hash('telemetry', undef)
+$resource_api      = $plugin_data['resource_api']
 $user              = 'hindsight'
 $group             = 'hindsight'
 $influxdb_address  = hiera('telemetry::influxdb::address')

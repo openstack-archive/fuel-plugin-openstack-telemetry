@@ -31,7 +31,7 @@ if $plugin_data['elastic_search_ip'] {
   $elasticsearch_mode = 'local'
 }
 
-#$elasticsearch_mode = $plugin_data['elasticsearch_mode']
+$elasticsearch_mode = $plugin_data['elasticsearch_mode']
 $es_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
 $es_nodes_count = count($es_nodes)
 
