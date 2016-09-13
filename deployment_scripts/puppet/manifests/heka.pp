@@ -1,8 +1,11 @@
 
 ## Get values
+$plugin_data = hiera_hash('telemetry', undef)
+$resource_api = $plugin_data['resource_api']
 
-$config_dir = hiera('telemetry::heka::config_dir')
-$amqp_url   = hiera('telemetry::rabbit::url')
+$config_dir      = hiera('telemetry::heka::config_dir')
+$amqp_url        = hiera('telemetry::rabbit::url')
+$metadata_fields = hiera('telemetry::metadata_fields')
 
 if hiera('telemetry::elasticsearch::server',false) {
   $ip = hiera('telemetry::elasticsearch::server')
@@ -20,8 +23,7 @@ $influxdb_database = hiera('telemetry::influxdb::database')
 $influxdb_user     = hiera('telemetry::influxdb::user')
 $influxdb_password = hiera('telemetry::influxdb::password')
 
-#TODO move to hiera
-$module_directory  = '/usr/share/telemetry_lua_modules'
+$modules_dir       = hiera('telemetry::lua::modules_dir')
 
 ### Heka configuration
 

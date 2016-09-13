@@ -31,7 +31,7 @@ if $plugin_data['elastic_search_ip'] {
   $elasticsearch_mode = 'local'
 }
 
-#$elasticsearch_mode = $plugin_data['elasticsearch_mode']
+$elasticsearch_mode = $plugin_data['elasticsearch_mode']
 $es_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
 $es_nodes_count = count($es_nodes)
 
@@ -119,6 +119,9 @@ $rabbit_user = $rabbit_info['user']
 $amqp_host = hiera('amqp_hosts')
 $amqp_url = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}/"
 
+$metadata_fields   = join(['status deleted container_format min_ram updated_at ',
+  'min_disk is_public size checksum created_at disk_format protected instance_host ',
+  'host  display_name instance_id instance_type status state'])
 
 $calculated_content = inline_template('
 ---
@@ -159,6 +162,9 @@ telemetry::heka::poolsize: 100
 telemetry::heka::config_dir: "/etc/telemetry-collector"
 
 telemetry::rabbit::url: "<%= @amqp_url %>"
+
+telemetry::metadata_fields: "<%= @metadata_fields %>"
+telemetry::lua::modules_dir: "/usr/share/telemetry_lua_modules"
 
 ')
 

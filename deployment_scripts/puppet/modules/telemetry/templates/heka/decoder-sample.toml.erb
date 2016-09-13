@@ -7,3 +7,8 @@ module_directory = "<%= @module_directory %>/common;/usr/share/heka/lua_modules"
 [sample_decoder.config]
 metadata_fields = 'status deleted container_format min_ram updated_at min_disk is_public size checksum created_at disk_format protected instance_host host  display_name instance_id instance_type status state' 
 decoder = "ceilometer"
+<% if @resource_api %>       
+decode_resources = <%= @resource_api %>
+<% else %> 
+decode_resources = false
+<% end %>

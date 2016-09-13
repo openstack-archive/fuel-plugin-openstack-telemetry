@@ -1,7 +1,7 @@
 
 notice('MODULAR: fuel-plugin-telemetry: lua-scripts.pp')
 
-$modules_dir = '/usr/share/telemetry_lua_modules'
+$modules_dir = hiera('telemetry::lua::modules_dir')
 
 $dirs = [
   $modules_dir,
