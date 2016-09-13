@@ -1,0 +1,16 @@
+filename        = "elasticsearch_bulk_tcp.lua"
+message_matcher = "Type == 'ceilometer_resources'"
+ticker_interval = 10
+memory_limit    = 200e6
+
+address             = "<%= @es_server %>"
+port                = "<%= @es_port %>"
+timeout             = 10
+flush_count         = 5000
+flush_on_shutdown   = false
+preserve_data       = not flush_on_shutdown
+discard_on_error    = false
+
+encoder_module  = "elasticsearch_resources.lua"
+index     = "ceilometer_resource"
+type_name = "source"

@@ -15,51 +15,19 @@ require "string"
 require "cjson"
 local utils = require "lma_utils"
 local elasticsearch = require "elasticsearch"
+local encoder_module = read_config("encoder") or error("Encoder should be defined")
 
-local index = read_config("index") or "index"
-local type_name = read_config("type_name") or "source"
+local encode = require(encoder_module).encode
+if not encode then
+    error("Encoder should implements 'encode' function")
+end
 
 function process_message()
-    local ns
-    local resources = cjson.decode(read_message("Payload"))
-    for resource_id, resource in pairs(resources) do
-        local update = cjson.encode({
-            update = {_index = index, _type = type_name, _id = resource_id}
-        })
-        local body = {
-            script = 'ctx._source.meters += meter;' ..
-            'ctx._source.user_id = user_id;' ..
-            'ctx._source.project_id = project_id;' ..
-            'ctx._source.source = source; ' ..
-            'ctx._source.metadata =  ' ..
-            'ctx._source.last_sample_timestamp <= timestamp ? ' ..
-            'metadata : ctx._source.metadata;' ..
-            'ctx._source.last_sample_timestamp = ' ..
-            'ctx._source.last_sample_timestamp < timestamp ?' ..
-            'timestamp : ctx._source.last_sample_timestamp;' ..
-            'ctx._source.first_sample_timestamp = ' ..
-            'ctx._source.first_sample_timestamp > timestamp ?' ..
-            'timestamp : ctx._source.first_sample_timestamp;',
-            params = {
-                meter = resource.meter,
-                metadata = resource.metadata,
-                timestamp = resource.timestamp,
-                user_id = resource.user_id or '',
-                project_id = resource.project_id or '',
-                source = resource.source or '',
-            },
-            upsert = {
-                first_sample_timestamp = resource.timestamp,
-                last_sample_timestamp = resource.timestamp,
-                project_id = resource.project_id or '',
-                user_id = resource.user_id or '',
-                source = resource.source or '',
-                metadata = resource.metadata,
-                meters = resource.meter
-            }
-        }
-        body = cjson.encode(body)
-        add_to_payload(update, "\n", body, "\n")
+    local code, payload = encode()
+    if code == 0 then
+        add_to_payload(payload)
+        return utils.safe_inject_payload()
+    else
+        return code, payload
     end
-    return utils.safe_inject_payload()
 end
