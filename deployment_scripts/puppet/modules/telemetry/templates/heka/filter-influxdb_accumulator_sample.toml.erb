@@ -3,11 +3,11 @@ type = "SandboxFilter"
 filename = "<%= @modules_dir %>/filters/influxdb_accumulator.lua"
 module_directory = "<%= @modules_dir %>/common;/usr/share/heka/lua_modules"
 preserve_data = false
-message_matcher = "Fields[aggregator] == NIL && Type =~ /sample.bulk_metric$/"
+message_matcher = "Fields[aggregator] == NIL && Type =~ /ceilometer_samples/"
 ticker_interval = 1
 
 [ceilometer_influxdb_accumulator_filter.config]
-tag_fields = 'deployment_id environment_label hostname tenant_id user_id'
 time_precision = 'ns'
 payload_name = 'sample_data'
-flush_count = 10
+flush_count = 500
+bulk_metric_type_matcher = 'ceilometer_samples'
