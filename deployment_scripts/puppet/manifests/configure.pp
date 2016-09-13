@@ -3,6 +3,10 @@ notice('MODULAR: fuel-plugin-telemetry: configure.pp')
 # Let's use already defined params for ceilometer
 include ::ceilometer::params
 
+$plugin_data = hiera_hash('telemetry', undef)
+$resource_api = $plugin_data['resource_api']
+$event_api    = $plugin_data['event_api']
+
 # TODO_0 'set' default values when looking for via hiera
 # TODO_1 add if statments in case of 'advanced settings' passed through Fuel UI
 # TODO_2 checks if we can reach ES, influxdb before actioning?
@@ -78,8 +82,12 @@ service { 'ceilometer-collector':
 # TODO validate values before proceed
 
 ceilometer_config { 'database/metering_connection': value => $metering_connection }
-ceilometer_config { 'database/resource_connection': value => $resource_connection }
-ceilometer_config { 'database/event_connection':    value => $event_connection }
+if $resource_api {
+  ceilometer_config { 'database/resource_connection': value => $resource_connection }
+}
+if $event_api {
+  ceilometer_config { 'database/event_connection':    value => $event_connection }
+}
 ceilometer_config { 'database/connection':          value => $connection }
 ceilometer_config { 'notification/store_events':    value => false }
 
