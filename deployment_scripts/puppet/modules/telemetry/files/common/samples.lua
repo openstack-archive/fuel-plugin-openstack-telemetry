@@ -183,8 +183,9 @@ function SamplesDecoder:decode (data)
         end
         sample_msg.Payload = cjson.encode(sample_payload)
         sample_msg.Timestamp = patt.Timestamp:match(message_body.timestamp)
+        return 0, sample_msg
     end
-    return 0, sample_msg
+    return -2, "Empty message"
 end
 
 return SamplesDecoder
