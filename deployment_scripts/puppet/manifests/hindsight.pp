@@ -86,6 +86,9 @@ $configs = {
   "${run_dir}/output/influxdb_ceilometer.cfg" => {
     content => template( "${templates}/output/influxdb_ceilometer.cfg.erb"),
   },
+  "${run_dir}/output/elasticsearch_ceilometer.cfg" => {
+    content => template( "${templates}/output/elasticsearch_ceilometer.cfg.erb"),
+  },
   "${run_dir}/input/ceilometer_kafka.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
   }
@@ -101,6 +104,9 @@ $scripts = {
   },
   "${run_dir}/input/kafka_input.lua" => {
     source => 'puppet:///modules/telemetry/hindsight/run/input/kafka_input.lua'
+  },
+  "${run_dir}/input/elasticsearch_bulk_tcp.lua" => {
+    source => 'puppet:///modules/telemetry/hindsight/run/input/elasticsearch_bulk_tcp.lua'
   }
 }
 
