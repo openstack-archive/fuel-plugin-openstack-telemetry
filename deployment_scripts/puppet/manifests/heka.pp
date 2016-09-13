@@ -1,5 +1,7 @@
 
 ## Get values
+$plugin_data = hiera_hash('telemetry', undef)
+$resource_api = $plugin_data['resource_api']
 
 $config_dir      = hiera('telemetry::heka::config_dir')
 $amqp_url        = hiera('telemetry::rabbit::url')
