@@ -15,6 +15,7 @@
 local table = require 'table'
 
 local samples = require 'samples'
+local resources = require 'resources'
 local patt = require 'patterns'
 local utils = require 'lma_utils'
 
@@ -25,10 +26,15 @@ local fields_grammar = l.Ct((l.C((l.P(1) - l.P" ")^1) * l.P" "^0)^0)
 local metadata_fields = fields_grammar:match(
     read_config("metadata_fields") or ""
 )
-local samples_decoder = samples.new(metadata_fields)
+local decode_resources = read_config('decode_resources') or false
 
-local decode_resources = false
-resource_decoder = {}
+
+local samples_decoder = samples.new(metadata_fields)
+local resource_decoder = nil
+
+if decode_resources then
+    resource_decoder = resources.new()
+end
 
 local CeilometerDecoder = {}
 CeilometerDecoder.__index = CeilometerDecoder
@@ -45,7 +51,7 @@ end
 
 function decode(data)
     local code, msg = inject(samples_decoder:decode(data))
-    if code == 0 and decode_resources then
+    if code == 0 and resource_decoder then
         code, msg = inject(resource_decoder:decode(data))
     end
     return code, msg

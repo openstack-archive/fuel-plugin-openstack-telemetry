@@ -1,13 +1,10 @@
 [elasticsearch_resource_output]
 type = "ElasticSearchOutput"
-message_matcher = "Type == 'resource'"
+message_matcher = "Type == 'ceilometer_resource'"
 encoder = "elasticsearch_resource_encoder"
-
 flush_interval = 5000
-flush_count = 10
-
+flush_count = 100
 server = "<%= @elasticsearch_url %>"
-
 use_buffering = true
 
 [elasticsearch_resource_output.buffering]
