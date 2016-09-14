@@ -98,7 +98,8 @@ if $telemetry['influxdb_address'] {
     ]))
   }
 
-  # TODO test for multiple inxlixdb nodes !!!
+  # TODO test for multiple influxdb nodes !!!
+  # TODO use vip?
   $influxdb_address = $nodes_array[0]['network_roles']['management']
 
   $retention_period  = $influxdb_grafana['retention_period']
@@ -112,16 +113,33 @@ if $telemetry['influxdb_address'] {
 
 # Rabbit
 
-$rabbit_info = hiera('rabbit')
+$rabbit_info     = hiera('rabbit')
 $rabbit_password = $rabbit_info['password']
-$rabbit_user = $rabbit_info['user']
+$rabbit_user     = $rabbit_info['user']
 # TODO take one?
-$amqp_host = hiera('amqp_hosts')
-$amqp_url = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}/"
+$amqp_host       = hiera('amqp_hosts')
+$amqp_url        = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}/"
 
 $metadata_fields   = join(['status deleted container_format min_ram updated_at ',
   'min_disk is_public size checksum created_at disk_format protected instance_host ',
   'host  display_name instance_id instance_type status state'])
+
+# Kafka
+$kafka_port   = 9092
+$kafka_nodes  = get_nodes_hash_by_roles($network_metadata, ['kafka', 'primary-kafka'])
+$kafka_ip_map = get_node_to_ipaddr_map_by_network_role($kafka_nodes, 'management')
+
+if count($kafka_ip_map)>0 {
+    notice('Kafka nodes found')
+    $kafka_enabled = true
+    $kafka_ips     = sort(values($kafka_ip_map))
+    # Format: host:port,host:port for ceiolmeter.conf
+    $tmp_list      = join($kafka_ips,":${kafka_port},")
+    $broker_list   = join([$tmp_list,":${kafka_port}"])
+} else {
+    notice('No Kafka nodes found')
+    $kafka_enabled = false
+}
 
 $calculated_content = inline_template('
 ---
@@ -160,6 +178,16 @@ telemetry::heka::max_process_inject: 1
 telemetry::heka::max_timer_inject: 10
 telemetry::heka::poolsize: 100
 telemetry::heka::config_dir: "/etc/telemetry-collector"
+
+<% if @kafka_enabled -%>
+telemetry::kafka::broker_list: "<%= @broker_list %>"
+telemetry::kafka::nodes_list:
+<% @kafka_ips.each do |s| -%>
+  - "<%= s %>"
+<% end -%>
+<% end -%>
+telemetry::kafka::enabled: <%= @kafka_enabled %>
+telemetry::kafka::port: <%= @kafka_port %>
 
 telemetry::rabbit::url: "<%= @amqp_url %>"
 

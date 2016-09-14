@@ -70,9 +70,27 @@ create_resources(package, $packages)
 
 # Stop not needed any more service
 service { 'ceilometer-collector':
-    ensure    => stopped,
-    enable    => false,
-    hasstatus => true,
+  ensure    => stopped,
+  enable    => false,
+  hasstatus => true,
+}
+
+# Kafka integration
+
+if hiera('telemetry::kafka::enabled') {
+
+  ceilometer_config { 'oslo_messaging_kafka/consumer_group':        value => 'ceilometer' }
+
+  $kafka_ips  = hiera('telemetry::kafka::broker_list')
+  $kafka_url  = "kafka://${kafka_ips}"
+  $rabbit_url = hiera('telemetry::rabbit::url')
+
+  ceilometer_config { 'DEFAULT/transport_url':                      value => $kafka_url }
+  ceilometer_config { 'notification/messaging_urls':                value => [$kafka_url,$rabbit_url] }
+  ceilometer_config { 'oslo_messaging_notifications/transport_url': value => $kafka_url }
+
+  ceilometer_config { 'compute/resource_update_interval':           value => 600 }
+
 }
 
 # TODO validate values before proceed
@@ -97,13 +115,13 @@ if hiera('fuel_version') == '9.0' {
 }
 
 service { 'ceilometer-service':
-      ensure     => $service_ensure,
-      name       => $::ceilometer::params::api_service_name,
-      enable     => $enabled,
-      hasstatus  => true,
-      hasrestart => true,
-      tag        => 'ceilometer-service',
-    }
+  ensure     => $service_ensure,
+  name       => $::ceilometer::params::api_service_name,
+  enable     => $enabled,
+  hasstatus  => true,
+  hasrestart => true,
+  tag        => 'ceilometer-service',
+}
 
 Ceilometer_config<||> ~> Service['ceilometer-service']
 
