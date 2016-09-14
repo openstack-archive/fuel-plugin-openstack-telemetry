@@ -103,11 +103,11 @@ ceilometer_config { 'notification/store_events':    value => false }
 
 # Workaround for fixing Ceilometer bug in MOS9.0
 if hiera('fuel_version') == '9.0' {
-  $patch = "/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.py"
+  $patch = '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.py'
   file { "${patch}":
     ensure  => 'present',
     content => file( 'telemetry/ceilometer_fixes/impl_elasticsearch.py' ),
-    mode    => '644',
+    mode    => '0644',
     owner   => 'root',
     group   => 'root',
     notify  => Service['ceilometer-service'],
