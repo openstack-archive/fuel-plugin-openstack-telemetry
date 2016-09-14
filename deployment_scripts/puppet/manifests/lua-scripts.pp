@@ -31,7 +31,10 @@ $scripts = {
   },
   "${modules_dir}/decoders/metering.lua" => {
     source => 'puppet:///modules/telemetry/decoders/metering.lua'
-  }
+  },
+  "${modules_dir}//common/resources.lua" => {
+    source => 'puppet:///modules/telemetry//common/resources.lua'
+  },
 }
 
 #TODO

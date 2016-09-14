@@ -14,7 +14,7 @@ if !hiera('telemetry::kafka::enabled') {
 
   if hiera('telemetry::elasticsearch::server',false) {
     $ip = hiera('telemetry::elasticsearch::server')
-    $port = hiera('telemetry::elasticsearch::server')
+    $port = hiera('telemetry::elasticsearch::rest_port')
     $elasticsearch_url = "http://${ip}:${port}"
   } else {
     #no Elasticsearch
