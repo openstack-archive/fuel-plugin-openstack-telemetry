@@ -98,8 +98,12 @@ if $telemetry['influxdb_address'] {
     ]))
   }
 
-  # TODO test for multiple inxlixdb nodes !!!
-  $influxdb_address = $nodes_array[0]['network_roles']['management']
+  $influxdb_vip_name = 'influxdb'
+  if $network_metadata['vips'][$influxdb_vip_name] {
+    $influxdb_address = $network_metadata['vips'][$influxdb_vip_name]['ipaddr']
+  } else {
+    $influxdb_address = $nodes_array[0]['network_roles']['management']
+  }
 
   $retention_period  = $influxdb_grafana['retention_period']
   $influxdb_user     = $influxdb_grafana['influxdb_username']
