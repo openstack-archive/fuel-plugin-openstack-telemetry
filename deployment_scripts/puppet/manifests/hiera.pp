@@ -125,17 +125,20 @@ $metadata_fields   = join(['status deleted container_format min_ram updated_at '
   'host  display_name instance_id instance_type status state'])
 
 # Kafka
-$kafka_port   = 9092
-$kafka_nodes  = get_nodes_hash_by_roles($network_metadata, ['kafka', 'primary-kafka'])
-$kafka_ip_map = get_node_to_ipaddr_map_by_network_role($kafka_nodes, 'management')
+$kafka_port     = 9092
+$zookeeper_port = 2181
+$kafka_nodes    = get_nodes_hash_by_roles($network_metadata, ['kafka', 'primary-kafka'])
+$kafka_ip_map   = get_node_to_ipaddr_map_by_network_role($kafka_nodes, 'management')
 
 if count($kafka_ip_map)>0 {
     notice('Kafka nodes found')
-    $kafka_enabled = true
-    $kafka_ips     = sort(values($kafka_ip_map))
+    $kafka_enabled  = true
+    $kafka_ips      = sort(values($kafka_ip_map))
     # Format: host:port,host:port for ceiolmeter.conf
-    $tmp_list      = join($kafka_ips,":${kafka_port},")
-    $broker_list   = join([$tmp_list,":${kafka_port}"])
+    $tmp_list       = join($kafka_ips,":${kafka_port},")
+    $broker_list    = join([$tmp_list,":${kafka_port}"])
+    $tmp_list2      = join($kafka_ips,":${zookeeper_port},")
+    $zookeeper_list = join([$tmp_list2,":${zookeeper_port}"])
 } else {
     notice('No Kafka nodes found')
     $kafka_enabled = false
@@ -185,6 +188,7 @@ telemetry::kafka::nodes_list:
 <% @kafka_ips.each do |s| -%>
   - "<%= s %>"
 <% end -%>
+telemetry::kafka::zookeeper_list: "<%= @zookeeper_list %>"
 <% end -%>
 telemetry::kafka::enabled: <%= @kafka_enabled %>
 telemetry::kafka::port: <%= @kafka_port %>
