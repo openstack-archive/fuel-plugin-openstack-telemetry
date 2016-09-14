@@ -116,9 +116,9 @@ if $telemetry['influxdb_address'] {
 $rabbit_info     = hiera('rabbit')
 $rabbit_password = $rabbit_info['password']
 $rabbit_user     = $rabbit_info['user']
-# TODO take one?
-$amqp_host       = hiera('amqp_hosts')
-$amqp_url        = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}/"
+# remove spaces from host list
+$amqp_hosts      = regsubst(hiera('amqp_hosts'),'\s','','G')
+$amqp_url        = "amqp://${rabbit_user}:${rabbit_password}@${amqp_hosts}/"
 
 $metadata_fields   = join(['status deleted container_format min_ram updated_at ',
   'min_disk is_public size checksum created_at disk_format protected instance_host ',
