@@ -7,7 +7,7 @@ $metadata_fields = hiera('telemetry::metadata_fields')
 
 if hiera('telemetry::elasticsearch::server',false) {
   $ip = hiera('telemetry::elasticsearch::server')
-  $port = hiera('telemetry::elasticsearch::server')
+  $port = hiera('telemetry::elasticsearch::rest_port')
   $elasticsearch_url = "http://${ip}:${port}"
 } else {
   #no Elasticsearch
