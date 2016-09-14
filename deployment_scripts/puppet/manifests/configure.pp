@@ -91,6 +91,12 @@ if hiera('telemetry::kafka::enabled') {
 
   ceilometer_config { 'compute/resource_update_interval':           value => 600 }
 
+  # Coordination
+  $zookeeper_list = hiera('telemetry::kafka::zookeeper_list')
+  $zookeeper_url  = "zookeeper://${zookeeper_list}"
+  ceilometer_config { 'coordination/backend_url': value => $zookeeper_url }
+  aodh_config { 'coordination/backend_url':       value => $zookeeper_url }
+
 }
 
 # TODO validate values before proceed
