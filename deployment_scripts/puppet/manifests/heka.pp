@@ -33,7 +33,7 @@ if !hiera('telemetry::kafka::enabled') {
   ### Heka configuration
 
   File {
-    before => Service['telemetry-collector']
+    before => Service['telemetry-collector-heka']
   }
 
   file {
@@ -65,8 +65,8 @@ if !hiera('telemetry::kafka::enabled') {
   $user='root'
   user { $user: }
 
-  ::heka { 'telemetry-collector':
-    config_dir          => '/etc/telemetry-collector',
+  ::heka { 'telemetry-collector-heka':
+    config_dir          => $config_dir,
     user                => $user,
     #additional_groups   => $additional_groups,
     hostname            => $::hostname,
@@ -80,11 +80,11 @@ if !hiera('telemetry::kafka::enabled') {
 
   # Heka pacemaker config
 
-  pacemaker::service { 'telemetry-collector':
+  pacemaker::service { 'telemetry-collector-heka':
     ensure           => present,
     prefix           => false,
     primitive_class  => 'ocf',
-    primitive_type   => 'ocf-telemetry',
+    primitive_type   => 'ocf-telemetry-heka',
     use_handler      => false,
     complex_type     => 'clone',
     complex_metadata => {
@@ -99,9 +99,9 @@ if !hiera('telemetry::kafka::enabled') {
       'migration-threshold' => '3',
     },
     parameters       => {
-      'service_name' => 'telemetry-collector',
-      'config'       => '/etc/telemetry-collector',
-      'log_file'     => '/var/log/telemetry-collector.log',
+      'service_name' => 'telemetry-collector-heka',
+      'config'       => $config_dir,
+      'log_file'     => '/var/log/telemetry-collector-heka.log',
       'user'         => $user,
     },
     operations       => {
@@ -118,7 +118,7 @@ if !hiera('telemetry::kafka::enabled') {
     },
   }
 
-  service { 'telemetry-collector':
+  service { 'telemetry-collector-heka':
     ensure   => 'running',
     enable   => true,
     provider => 'pacemaker',
