@@ -98,16 +98,12 @@ $configs = {
   "${run_dir}/output/influxdb_ceilometer.cfg" => {
     content => template( "${templates}/output/influxdb_ceilometer.cfg.erb"),
   },
-<<<<<<< HEAD
-  "${run_dir}/input/kafka_input.cfg" => {
-=======
   "${run_dir}/output/elasticsearch_ceilometer.cfg" => {
     content => template( "${templates}/output/elasticsearch_ceilometer.cfg.erb"),
   },
-  "${run_dir}/input/ceilometer_kafka.cfg" => {
->>>>>>> Add resource decoder to Hindsight lua plugins
+  "${run_dir}/input/kafka_input.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
-  }
+  },
 }
 
 create_resources(file, $configs, $files_defaults)
