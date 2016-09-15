@@ -64,7 +64,7 @@ meta_data() {
     cat <<END
 <?xml version="1.0"?>
 <!DOCTYPE resource-agent SYSTEM "ra-api-1.dtd">
-<resource-agent name="telemetry_collector">
+<resource-agent name="telemetry_collector_heka">
 <version>1.0</version>
 
 <longdesc lang="en">
