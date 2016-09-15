@@ -12,8 +12,8 @@ $influxdb_user     = hiera('telemetry::influxdb::user')
 $influxdb_password = hiera('telemetry::influxdb::password')
 $metadata_fields   = hiera('telemetry::metadata_fields')
 # TODO settings/hiera
-$es_server = hierra('telemetry::elasticsearch::server')
-$es_port = hierra('telemetry::elasticsearch::rest_port')
+$es_server         = hiera('telemetry::elasticsearch::server')
+$es_port           = hiera('telemetry::elasticsearch::rest_port')
 $topics            = 'metering.sample'
 
 # Kafka integration
