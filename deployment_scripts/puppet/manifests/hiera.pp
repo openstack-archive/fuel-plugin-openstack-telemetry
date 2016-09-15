@@ -190,7 +190,7 @@ telemetry::heka::max_message_size: 262144
 telemetry::heka::max_process_inject: 1
 telemetry::heka::max_timer_inject: 10
 telemetry::heka::poolsize: 100
-telemetry::heka::config_dir: "/etc/telemetry-collector"
+telemetry::heka::config_dir: "/etc/telemetry-collector-heka"
 
 # Kafka
 
