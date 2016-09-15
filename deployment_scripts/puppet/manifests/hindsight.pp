@@ -11,10 +11,15 @@ $influxdb_database = hiera('telemetry::influxdb::database')
 $influxdb_user     = hiera('telemetry::influxdb::user')
 $influxdb_password = hiera('telemetry::influxdb::password')
 $metadata_fields   = hiera('telemetry::metadata_fields')
-# TODO settings/hiera
-$es_server = hierra('telemetry::elasticsearch::server')
-$es_port = hierra('telemetry::elasticsearch::rest_port')
 $topics            = 'metering.sample'
+
+if hiera('telemetry::elasticsearch::enabled') {
+  $es_server = hiera('telemetry::elasticsearch::server')
+  $es_port   = hiera('telemetry::elasticsearch::rest_port')
+} else {
+  $es_server = ''
+  $es_port   = ''
+}
 
 # Kafka integration
 $brokerlist = hiera('telemetry::kafka::nodes_list')
@@ -117,8 +122,8 @@ $scripts = {
   "${run_dir}/input/kafka_input.lua" => {
     source => 'puppet:///modules/telemetry/hindsight/run/input/kafka_input.lua'
   },
-  "${run_dir}/input/elasticsearch_bulk_tcp.lua" => {
-    source => 'puppet:///modules/telemetry/hindsight/run/input/elasticsearch_bulk_tcp.lua'
+  "${run_dir}/output/elasticsearch_bulk_tcp.lua" => {
+    source => 'puppet:///modules/telemetry/hindsight/run/output/elasticsearch_bulk_tcp.lua'
   }
 }
 

@@ -164,10 +164,15 @@ ceilometer:
 lma::elasticsearch::script_inline: "<%= @elasticsearch_script_inline %>"
 lma::elasticsearch::script_indexed: "<%= @elasticsearch_script_indexed %>"
 
+# Elasticsearch
+
+telemetry::elasticsearch::enabled: <%= @es_is_deployed %>
 <% if @es_is_deployed -%>
 telemetry::elasticsearch::server: <%= @es_server %>
 telemetry::elasticsearch::rest_port: 9200
 <% end -%>
+
+# IndluxDB
 
 telemetry::influxdb::mode: <%= @influxdb_mode %>
 telemetry::influxdb::address: <%= @influxdb_address %>
@@ -178,12 +183,16 @@ telemetry::influxdb::password: <%= @influxdb_password %>
 telemetry::influxdb::retention_period: <%= @retention_period %>
 telemetry::influxdb::rootpass: <%= @influxdb_rootpass %>
 
+# Heka
+
 telemetry::heka::version: "0.10.0"
 telemetry::heka::max_message_size: 262144
 telemetry::heka::max_process_inject: 1
 telemetry::heka::max_timer_inject: 10
 telemetry::heka::poolsize: 100
 telemetry::heka::config_dir: "/etc/telemetry-collector"
+
+# Kafka
 
 <% if @kafka_enabled -%>
 telemetry::kafka::broker_list: "<%= @broker_list %>"
