@@ -73,6 +73,7 @@ class Connection(base.Connection):
     def __init__(self, url):
         url_split = netutils.urlsplit(url)
         self.conn = es.Elasticsearch(url_split.netloc)
+        self.upgrade()
 
     def upgrade(self):
         iclient = es.client.IndicesClient(self.conn)
