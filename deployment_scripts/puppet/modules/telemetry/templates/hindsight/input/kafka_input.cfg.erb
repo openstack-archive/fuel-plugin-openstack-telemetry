@@ -6,8 +6,7 @@ filename         = "kafka_input.lua"
 brokerlist       = {<%= brokers %>}
 topics           = {"<%= @topics %>"}
 consumer_conf    = {
-  ["group.id"]          = "telemetry_collector",
-  ["message.max.bytes"] = 16024,
+  ["group.id"]          = "telemetry_collector"
 }
 topic_conf       = {}
 metadata_fields  = "<%= @metadata_fields %>"
