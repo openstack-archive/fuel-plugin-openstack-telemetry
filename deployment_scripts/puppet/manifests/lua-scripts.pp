@@ -15,8 +15,6 @@ $dirs = [
 
 file { $dirs:
   ensure  => 'directory',
-  # owner   => $user,
-  # group   => $group,
   recurse => true,
 }
 
@@ -37,17 +35,10 @@ $scripts = {
   },
 }
 
-#TODO
-# files shoud by readable for hindsight user
-# $files_defaults = {
-#     owner  => $user,
-#     group  => $group;
-#     before => Service['hindsight']
-# }
 
 create_resources(file, $scripts)
 
-# Scripts imported from lam_collector moduele
+# Scripts imported from lma_collector module
 # see pre_build_hook
 
 $lma_scripts = {
@@ -71,6 +62,9 @@ $lma_scripts = {
   },
   "${modules_dir}/common/extra_fields.lua" => {
     source => 'puppet:///modules/telemetry/common/extra_fields.lua'
+  },
+  "${modules_dir}/common/elasticsearch_resources.lua" => {
+    source => 'puppet:///modules/telemetry/common/elasticsearch_resources.lua'
   }
 }
 

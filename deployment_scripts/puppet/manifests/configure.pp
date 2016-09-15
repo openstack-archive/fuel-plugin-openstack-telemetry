@@ -3,7 +3,7 @@ notice('MODULAR: fuel-plugin-telemetry: configure.pp')
 # Let's use already defined params for ceilometer
 include ::ceilometer::params
 
-$plugin_data = hiera_hash('telemetry', undef)
+$plugin_data  = hiera_hash('telemetry', undef)
 $resource_api = $plugin_data['resource_api']
 $event_api    = $plugin_data['event_api']
 
@@ -105,18 +105,18 @@ if hiera('telemetry::kafka::enabled') {
 
 # TODO validate values before proceed
 
-ceilometer_config { 'database/metering_connection': value => $metering_connection }
+ceilometer_config { 'database/metering_connection':   value => $metering_connection }
 if $resource_api {
   ceilometer_config { 'database/resource_connection': value => $resource_connection }
 }
 if $event_api {
-  ceilometer_config { 'notification/store_events': value => True }
+  ceilometer_config { 'notification/store_events':    value => True }
   ceilometer_config { 'database/event_connection':    value => $event_connection }
 }
 else {
   ceilometer_config { 'notification/store_events':    value => false }
 }
-ceilometer_config { 'database/connection':          value => $connection }
+ceilometer_config { 'notification/workers': value => max($::processorcount/3,1) }
 
 # Workaround for fixing Ceilometer bug in MOS9.0
 if hiera('fuel_version') == '9.0' {

@@ -32,10 +32,10 @@ case $::osfamily {
 # The OCF script should exist before any node tries to configure the
 # collector services with Pacemaker. This is why it is shipped by this
 # manifest.
-file { 'ocf-telemetry':
+file { 'ocf-telemetry-heka':
   ensure => present,
-  source => 'puppet:///modules/telemetry/ocf-telemetry',
-  path   => '/usr/lib/ocf/resource.d/fuel/ocf-telemetry',
+  source => 'puppet:///modules/telemetry/ocf-telemetry-heka',
+  path   => '/usr/lib/ocf/resource.d/fuel/ocf-telemetry-heka',
   mode   => '0755',
   owner  => 'root',
   group  => 'root',
