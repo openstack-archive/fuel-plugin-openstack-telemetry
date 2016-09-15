@@ -9,6 +9,8 @@ if !hiera('telemetry::kafka::enabled') {
   $amqp_url        = hiera('telemetry::rabbit::url')
   $metadata_fields = hiera('telemetry::metadata_fields')
 
+  $plugin_data = hiera_hash('telemetry', undef)
+  $resource_api = $plugin_data['resource_api']
 
   if hiera('telemetry::elasticsearch::server',false) {
     $ip = hiera('telemetry::elasticsearch::server')
