@@ -43,7 +43,7 @@ if !hiera('telemetry::kafka::enabled') {
     "${config_dir}/file-output.toml":                        content => template( 'telemetry/heka/file-output.toml.erb' );
     "${config_dir}/filter-influxdb_accumulator_sample.toml": content => template( 'telemetry/heka/filter-influxdb_accumulator_sample.toml.erb' );
     # TODO disable config when Elasticsearch not in use
-    "${config_dir}/output-elasticsearch-resource2.toml":     content => template( 'telemetry/heka/output-elasticsearch-resource2.toml.erb' );
+    "${config_dir}/output-elasticsearch-resource.toml":      content => template( 'telemetry/heka/output-elasticsearch-resource.toml.erb' );
     "${config_dir}/output-influxdb-samples.toml":            content => template( 'telemetry/heka/output-influxdb-samples.toml.erb' );
   }
 
