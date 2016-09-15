@@ -53,10 +53,9 @@ group { $group:
 
 # Directories
 
-$conf_dir      = '/etc/telemetry_hindsight'
+$conf_dir      = '/etc/telemetry-collector-hindsight'
 $hindsight_dir = '/usr/share/telemetry_hindsight'
 $run_dir       = "${hindsight_dir}/run"
-# parent /var/lib/hindsight?
 $output_dir    = '/var/lib/hindsight/output'
 $sandbox_dir   = '/usr/lib/x86_64-linux-gnu/luasandbox'
 $templates     = 'telemetry/hindsight/'
@@ -77,27 +76,28 @@ file { $dirs:
   owner   => $user,
   group   => $group,
   recurse => true,
-  require => Package['hindsight']
+  require => Package['hindsight'],
 }
 
 $files_defaults = {
-    owner  => $user,
-    group  => $group,
-    before => Service['hindsight']
+  owner  => $user,
+  group  => $group,
+  before => Service['telemetry-collector-hindsight'],
+  notify => Service['telemetry-collector-hindsight'],
 }
 
 # Config files
 
-file {  '/etc/telemetry_hindsight/hindsight.cfg':
+file {  "${conf_dir}/hindsight.cfg":
   ensure  => 'present',
   owner   => $user,
   group   => $group,
   content => template( 'telemetry/hindsight/hindsight.cfg.erb' ),
-  require => Package['hindsight']
+  require => Package['hindsight'],
+  notify  => Service['telemetry-collector-hindsight'],
 }
 
 # Templates
-# TODO unhardkode kafka port
 
 $configs = {
   "${run_dir}/output/influxdb_ceilometer.cfg" => {
@@ -129,17 +129,14 @@ $scripts = {
 
 create_resources(file, $scripts, $files_defaults)
 
-file { '/etc/init/hindsight.conf':
+file { '/etc/init/telemetry-collector-hindsight.conf':
   content => template( "${templates}/init.conf.erb"),
-  before  => Service['hindsight']
+  before  => Service['telemetry-collector-hindsight'],
 }
 
-service { 'hindsight':
+service { 'telemetry-collector-hindsight':
   ensure   => 'running',
   enable   => true,
   provider => 'upstart',
-  require  => File['/etc/init/hindsight.conf']
+  require  => File['/etc/init/telemetry-collector-hindsight.conf'],
 }
-
-# TODO move to separated manifest
-#ceilometer_config { 'notification/messaging_urls':    value => ['http1','http2'] }
