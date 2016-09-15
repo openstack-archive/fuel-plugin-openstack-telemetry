@@ -104,6 +104,9 @@ $configs = {
   "${run_dir}/input/kafka_input.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
   },
+  "${run_dir}/input/prune_input.cfg" => {
+    content => template( "${templates}/input/prune_input.cfg.erb"),
+  },
 }
 
 create_resources(file, $configs, $files_defaults)
@@ -119,6 +122,9 @@ $scripts = {
   },
   "${run_dir}/input/elasticsearch_bulk_tcp.lua" => {
     source => 'puppet:///modules/telemetry/hindsight/run/input/elasticsearch_bulk_tcp.lua'
+  },
+  "${run_dir}/input/prune_input.lua" => {
+    source => 'puppet:///modules/telemetry/hindsight/run/input/prune_input.lua'
   }
 }
 
