@@ -10,7 +10,7 @@ sandbox_run_path       = "<%= @hindsight_dir %>/run"
 analysis_lua_path      = "<%= @sandbox_dir %>/modules/?.lua;<%= @sandbox_dir %>/modules/lpeg/?.lua;<%= @modules_dir %>/common/?.lua"
 analysis_lua_cpath     = "<%= @sandbox_dir %>/modules/?.so"
 io_lua_path            = analysis_lua_path ..  ";<%= @sandbox_dir %>/io_modules/?.lua"
-io_lua_cpath           = analysis_lua_cpath .. ";<%= @sandbox_dir %>/?.so"
+io_lua_cpath           = analysis_lua_cpath .. ";<%= @sandbox_dir %>/io_modules/?.so"
 
 input_defaults = {
   -- output_limit      = 64 * 1024
