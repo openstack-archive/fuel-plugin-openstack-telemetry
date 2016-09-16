@@ -109,12 +109,16 @@ ceilometer_config { 'database/metering_connection': value => $metering_connectio
 if $resource_api {
   ceilometer_config { 'database/resource_connection': value => $resource_connection }
 }
+else {
+  ceilometer_config { 'database/resource_connection': value => 'es://localhost:9200' }
+}
 if $event_api {
   ceilometer_config { 'notification/store_events': value => True }
   ceilometer_config { 'database/event_connection':    value => $event_connection }
 }
 else {
   ceilometer_config { 'notification/store_events':    value => false }
+  ceilometer_config { 'database/event_connection':    value => 'log://' }
 }
 ceilometer_config { 'database/connection':          value => $connection }
 
