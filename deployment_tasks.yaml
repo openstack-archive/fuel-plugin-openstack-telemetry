@@ -197,7 +197,7 @@
   type: puppet
   version: 2.1.0
   groups: [primary-controller, controller]
-  requires: [post_deployment_start,telemetry-hiera,telemetry-ceilometer-controller]
+  requires: [post_deployment_start,telemetry-aodh,telemetry-hiera,telemetry-ceilometer-controller]
   required_for: [post_deployment_end]
 #  required_for: [deploy_end]
 #  requires: [deploy_start, telemetry-ceilometer-controller]
