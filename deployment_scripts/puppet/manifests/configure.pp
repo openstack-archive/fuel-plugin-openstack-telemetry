@@ -109,12 +109,16 @@ ceilometer_config { 'database/metering_connection':   value => $metering_connect
 if $resource_api {
   ceilometer_config { 'database/resource_connection': value => $resource_connection }
 }
+else {
+  ceilometer_config { 'database/resource_connection': value => 'es://localhost:9200' }
+}
 if $event_api {
   ceilometer_config { 'notification/store_events':    value => True }
   ceilometer_config { 'database/event_connection':    value => $event_connection }
 }
 else {
   ceilometer_config { 'notification/store_events':    value => false }
+  ceilometer_config { 'database/event_connection':    value => 'log://' }
 }
 ceilometer_config { 'notification/workers': value => max($::processorcount/3,1) }
 
@@ -126,8 +130,24 @@ if hiera('fuel_version') == '9.0' {
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    notify  => Service['ceilometer-service'],
+    notify  => Service['ceilometer-service','ceilometer-agent-notification'],
+    require => File['impl_elasticsearch.pyc'],
   }
+
+  file {'/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.pyc':
+    ensure => 'absent',
+    alias  => 'impl_elasticsearch.pyc',
+  }
+
+  service {'ceilometer-agent-notification':
+    ensure     => $service_ensure,
+    name       => $::ceilometer::params::agent_notification_service_name,
+    enable     => $enabled,
+    hasstatus  => true,
+    hasrestart => true,
+    tag        => 'ceilometer-agent-notification',
+  }
+
 }
 
 service { 'ceilometer-service':
