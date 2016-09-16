@@ -19,15 +19,6 @@ flush_count         = 50000
 flush_on_shutdown   = false
 preserve_data       = not flush_on_shutdown --in most cases this should be the inverse of flush_on_shutdown
 discard_on_error    = false
-
--- See the elasticsearch module directory for the various encoders and configuration documentation.
-encoder_module  = "heka.elasticsearch.moz_telemetry"
-encoder_cfg     = {
-    es_index_from_timestamp = true,
-    index                   = "%{Logger}-%{%Y.%m.%d}",
-    type_name               = "%{Type}-%{Hostname}",
-    fields                  = {"Fields[request]", "Fields[http_user_agent]"},
-}
 ```
 --]]
 
@@ -51,7 +42,11 @@ local flush_count       = read_config("flush_count") or 5000
 local last_flush        = time()
 
 local encoder_module   = read_config("encoder_module") or error("Encoder should be defined")
-local encoder = require(encoder_module)
+local encode = require(encoder_module).encode
+if not encode then
+    error("Encode function should be implemented by ".. encoder_module)
+end
+
 
 local client
 local function create_client()
@@ -146,7 +141,7 @@ retry       = false
 
 function process_message()
     if not retry then
-        local code, msg = encoder.encode()
+        local code, msg = encode()
         if code == 0 and string.len(msg) > 0 then
             _, lines = string.gsub(msg, '\n', '\n')
             batch_count = batch_count + lines

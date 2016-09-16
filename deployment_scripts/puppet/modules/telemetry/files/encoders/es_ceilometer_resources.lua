@@ -14,7 +14,6 @@
 require "string"
 require "cjson"
 local utils = require "lma_utils"
-local elasticsearch = require "elasticsearch"
 local encoder_module = read_config("encoder") or error("Encoder should be defined")
 
 local encode = require(encoder_module).encode
