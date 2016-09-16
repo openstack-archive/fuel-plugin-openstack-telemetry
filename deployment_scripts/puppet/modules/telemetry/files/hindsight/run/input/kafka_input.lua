@@ -3,6 +3,7 @@
 -- file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 require "kafka"
+require "table"
 local util = require "lma_utils"
 
 local brokerlist     = read_config("brokerlist") or error("brokerlist must be set")
@@ -18,6 +19,10 @@ if decoder_module then
     if not inject then
         error(decoder_module .. " does not provide a decode function")
     end
+end
+
+if type(brokerlist) == "table" then
+    brokerlist = table.concat(brokerlist, ",")
 end
 
 local consumer = kafka.consumer(brokerlist, topics, consumer_conf, topic_conf)

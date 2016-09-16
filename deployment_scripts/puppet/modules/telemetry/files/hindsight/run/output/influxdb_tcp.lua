@@ -6,7 +6,7 @@
 local os = require 'os'
 local http = require 'socket.http'
 
-local influxdb = require 'influx'
+local influxdb = require 'influxdb'
 
 local influxdb_host = read_config('host') or error('influxdb host is required')
 local influxdb_port = read_config('port') or error('influxdb port is required')

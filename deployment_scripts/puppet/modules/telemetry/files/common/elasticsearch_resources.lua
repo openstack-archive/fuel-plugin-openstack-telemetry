@@ -14,7 +14,6 @@
 require "string"
 require "cjson"
 local utils = require "lma_utils"
-local elasticsearch = require "elasticsearch"
 
 local index = read_config("index") or "index"
 local type_name = read_config("type_name") or "source"
