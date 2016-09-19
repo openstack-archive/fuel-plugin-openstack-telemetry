@@ -19,7 +19,10 @@ download_packages \
 
 # Oslo messaging
 
-download_packages $REPO_URL/p/python-oslo.messaging/python-oslo-messaging_4.6.1-3~u14.04+mos9_all.deb
+OSLO_REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-2016-09-19-100321/pool/main"
+
+download_packages $OSLO_REPO_URL/p/python-oslo.messaging.kafka/python-oslo.messaging.kafka_0.0.1-1~u14.04%2bmos1_all.deb
+download_packages $OSLO_REPO_URL/p/python-kafka/python-kafka_1.2.5-1~u14.04%2bmos1_all.deb
 
 # Download Heka deb package
 
