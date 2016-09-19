@@ -33,13 +33,10 @@ package { 'libluasandbox1': }
 package { 'hindsight': }
 package { 'librdkafka1': }
 package { 'lua-sandbox-extensions': }
-package { 'python-oslo.messaging': }
-package { 'python-pip': }
-
-package { 'kafka-python':
-  ensure   => '1.2.5',
-  provider => 'pip'
-}
+package { 'python-kafka':
+  ensure => '1.2.5-1~u14.04+mos1'
+} ->
+package { 'python-oslo.messaging.kafka': }
 
 # User/group
 
