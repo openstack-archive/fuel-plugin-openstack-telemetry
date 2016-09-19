@@ -161,19 +161,6 @@
   test_post:
     cmd: ruby /etc/puppet/modules/osnailyfacter/modular/openstack-haproxy/openstack-haproxy-ceilometer_post.rb
 
-#- id: telemetry-ceilometer-radosgw-user
-#  type: puppet
-#  version: 2.1.0
-#  role: [primary-controller, controller]
-#  requires: [post_deployment_start, enable_rados]
-#  required_for: [post_deployment_end]
-#  parameters:
-#    puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/ceilometer/radosgw_user.pp"
-#    puppet_modules: "/etc/puppet/modules"
-#    timeout: 300
-#    cwd: /
-
-
 - id: telemetry-configure-apt
   type: puppet
   version: 2.0.0
@@ -199,14 +186,8 @@
   groups: [primary-controller, controller]
   requires: [post_deployment_start,telemetry-aodh,telemetry-hiera,telemetry-ceilometer-controller]
   required_for: [post_deployment_end]
-#  required_for: [deploy_end]
-#  requires: [deploy_start, telemetry-ceilometer-controller]
   cross-depends:
     - name: primary-influxdb_grafana
-#    - name: lma-hiera-override
-#    - name: lma-aggregator
-#    - name: /(primary-)?cluster-haproxy/
-#      role: self
   parameters:
     puppet_manifest: puppet/manifests/configure.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
@@ -220,10 +201,6 @@
   required_for: [post_deployment_end]
   cross-depends:
     - name: primary-influxdb_grafana
-#    - name: lma-hiera-override
-#    - name: lma-aggregator
-#    - name: /(primary-)?cluster-haproxy/
-#      role: self
   parameters:
     puppet_manifest: puppet/manifests/configure-influxdb.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
@@ -258,9 +235,21 @@
   groups: [primary-controller, controller]
   required_for: [post_deployment_end]
   role: [primary-kafka, kafka]
-  requires: [telemetry-influxdb-create-db, telemetry-hiera]
+  requires: [telemetry-influxdb-create-db, telemetry-hiera, kafka-installation]
   parameters:
     puppet_manifest: puppet/manifests/hindsight.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
+- id: telemetry-create-topics
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end]
+  role: [primary-kafka, kafka]
+  requires: [telemetry-hindsight]
+  parameters:
+    puppet_manifest: puppet/manifests/create-topics.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
