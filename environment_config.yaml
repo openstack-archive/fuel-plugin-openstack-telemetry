@@ -12,10 +12,12 @@ attributes:
     restrictions:
       - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
         action: none
+        strict: false
         message: "The StackLight InfluxDB-Grafana plugin must be installed and enabled. Or use InfluxDB in 'remote' mode"
       - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true)
                      and (settings:telemetry.event_api.value == true or settings:telemetry.resource_api.value == true)"
         action: none
+        strict: false
         message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'remote' mode"
 
   event_api:
@@ -29,6 +31,7 @@ attributes:
         action: hide
       - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) and settings:telemetry.event_api.value == true"
         action: none
+        strict: false
         message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'remote' mode"
 
   resource_api:
@@ -42,6 +45,7 @@ attributes:
         action: hide
       - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true) and settings:telemetry.resource_api.value == true"
         action: none
+        strict: false
         message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'remote' mode"
 
   elasticsearch_mode:
@@ -56,6 +60,7 @@ attributes:
         restrictions:
           - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true)"
             action: disable
+            strict: false
             message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'external' mode"
       - data: "remote"
         label: "Use External Elasticsearch"
@@ -113,6 +118,7 @@ attributes:
         restrictions:
           - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
             action: disable
+            strict: false
             message: "The StackLight InfluxDB-Grafana plugin must be installed and enabled. Or use InfluxDB 'External' option below"
       - data: 'remote'
         label: "Use External InfluxDB"
