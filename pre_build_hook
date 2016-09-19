@@ -59,4 +59,5 @@ download_file $URL $COLLECTOR_TAG.tar.gz $TEMP_DIR
 tar -xf $TEMP_DIR/$COLLECTOR_TAG.tar.gz -C $DESTINATION --strip-components=4 $HEKA_MODULE_PATH
 rm -fr $TEMP_DIR
 
-env | grep BUILD_ID > env.txt
+env | grep BUILD_ID > env.txt || true
+
