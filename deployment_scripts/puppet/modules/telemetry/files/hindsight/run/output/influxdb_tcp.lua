@@ -13,10 +13,10 @@ local influxdb_port = read_config('port') or error('influxdb port is required')
 local influxdb_user = read_config('username')
 local influxdb_password = read_config('password')
 local batch_max_lines = read_config('batch_max_lines') or 3000
+local database_created = not (read_config("create_database") or false)
 assert(batch_max_lines > 0, 'batch_max_lines must be greater than zero')
 
 local db = read_config("database") or error("database config is required")
-local database_created = false
 
 local debug_output = read_config("debug") or false
 local write

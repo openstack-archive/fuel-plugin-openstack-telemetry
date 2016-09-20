@@ -22,7 +22,9 @@ if decoder_module then
 end
 
 if type(brokerlist) == "table" then
-    brokerlist = table.concat(brokerlist, ",")
+    -- TODO(ityaptin) Research issue with several brokers
+    -- brokerlist = table.concat(brokerlist, ",")
+    brokerlist = table.remove(brokerlist, 1)
 end
 
 local consumer = kafka.consumer(brokerlist, topics, consumer_conf, topic_conf)
