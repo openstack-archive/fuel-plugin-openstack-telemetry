@@ -118,6 +118,16 @@ $configs = {
 
 create_resources(file, $configs, $files_defaults)
 
+# Let's multiply kafka_input.cfg files
+define kafka_input_cfg_creator ($i = $title) {
+  file {"${run_dir}/input/kafka_input_${i}.cfg":
+    ensure => 'file',
+    content => template( "${templates}/input/kafka_input.cfg.erb"),
+  }
+}
+$sufix = ['1','2','3']
+kafka_input_cfg_creator { $sufix: }
+
 # Files
 
 $scripts = {
