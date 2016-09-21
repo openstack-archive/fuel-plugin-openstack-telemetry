@@ -13,9 +13,9 @@ io_lua_path            = analysis_lua_path ..  ";<%= @sandbox_dir %>/io_modules/
 io_lua_cpath           = analysis_lua_cpath .. ";<%= @sandbox_dir %>/io_modules/?.so"
 
 input_defaults = {
+  instruction_limit = 0
   -- output_limit      = 64 * 1024
   -- memory_limit      = 8 * 1024 * 1024
-  -- instruction_limit = 1e6
   -- preserve_data     = false
   -- ticker_interval   = 0
 }
