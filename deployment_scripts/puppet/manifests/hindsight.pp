@@ -34,7 +34,7 @@ package { 'hindsight': }
 package { 'librdkafka1': }
 package { 'lua-sandbox-extensions': }
 package { 'python-kafka':
-  ensure => '1.2.5-1~u14.04+mos1'
+  ensure => '1.2.5-1~u14.04+mos2'
 } ->
 package { 'python-oslo.messaging.kafka': }
 
