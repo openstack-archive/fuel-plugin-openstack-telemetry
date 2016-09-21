@@ -3,6 +3,11 @@ notice('MODULAR: fuel-plugin-telemetry: configure-compute.pp')
 
 if hiera('telemetry::kafka::enabled') {
 
+  package { 'python-kafka':
+    ensure => '1.2.5-1~u14.04+mos1'
+  } ->
+  package { 'python-oslo.messaging.kafka': }
+
   $kafka_ips  = hiera('telemetry::kafka::broker_list')
   $kafka_url  = "moskafka://${kafka_ips}"
   ceilometer_config {

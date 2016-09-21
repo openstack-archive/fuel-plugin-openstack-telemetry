@@ -8,7 +8,8 @@ $network_metadata         = hiera_hash('network_metadata')
 $controllers              = get_nodes_hash_by_roles($network_metadata, ['controller', 'primary-controller'])
 $controllers_amount       = count($controllers)
 $notifications_partitions = max($controllers_amount/3,1)*$::processorcount
-$metering_partitions      = $controllers_amount
+$kafka_nodes_count        = count(hiera('telemetry::kafka::nodes_list'))
+$metering_partitions      = $kafka_nodes_count*4
 
 # Connection info
 
