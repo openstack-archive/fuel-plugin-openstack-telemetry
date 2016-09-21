@@ -87,7 +87,7 @@ if hiera('telemetry::kafka::enabled') {
 
   $kafka_ips  = hiera('telemetry::kafka::broker_list')
   $kafka_url  = "moskafka://${kafka_ips}"
-  $rabbit_url = hiera('telemetry::rabbit::url')
+  $rabbit_url = 'rabbit://'
 
   ceilometer_config { 'DEFAULT/transport_url':                      value => $kafka_url }
   ceilometer_config { 'notification/messaging_urls':                value => [$kafka_url,$rabbit_url] }
