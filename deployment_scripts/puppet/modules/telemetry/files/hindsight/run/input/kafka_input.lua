@@ -10,7 +10,7 @@ local brokerlist     = read_config("brokerlist") or error("brokerlist must be se
 local topics         = read_config("topics") or error("topics must be set")
 local consumer_conf  = read_config("consumer_conf")
 local topic_conf     = read_config("topic_conf")
-local decoder_module = read_config("decoder_module")
+local decoder_module = read_config("decoder")
 local send_error_messages = read_config("send_error_messages") or false
 local inject         = inject_message
 
