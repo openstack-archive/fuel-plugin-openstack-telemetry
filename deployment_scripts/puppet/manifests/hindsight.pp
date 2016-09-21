@@ -111,9 +111,28 @@ $configs = {
   "${run_dir}/input/kafka_input.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
   },
+  # TODO: avoid such a ugly thigs like below
+  "${run_dir}/input/kafka_input_1.cfg" => {
+    content => template( "${templates}/input/kafka_input.cfg.erb"),
+  },
+  "${run_dir}/input/kafka_input_2.cfg" => {
+    content => template( "${templates}/input/kafka_input.cfg.erb"),
+  },
+  "${run_dir}/input/kafka_input_3.cfg" => {
+    content => template( "${templates}/input/kafka_input.cfg.erb"),
+  },
 }
 
 create_resources(file, $configs, $files_defaults)
+
+## Let's multiply kafka_input.cfg files
+#define telemetry::kafka_input_cfg_creator ($i = $title, $run_dir = $run_dir, $templates = $templates) {
+#  file {"${run_dir}/input/kafka_input_${i}.cfg":
+#    content => template( "${templates}/input/kafka_input.cfg.erb"),
+#  }
+#}
+#$sufix = ['1','2','3']
+#kafka_input_cfg_creator { $sufix: }
 
 # Files
 
