@@ -129,6 +129,20 @@
   test_post:
     cmd: ruby /etc/puppet/modules/openstack_tasks/examples/ceilometer/compute_post.rb
 
+- id: telemetry-ceilometer-configure-compute
+  type: puppet
+  version: 2.1.0
+  groups: [compute, compute-vmware]
+  required_for: [deploy_end]
+  requires: [telemetry-ceilometer-compute]
+  cross-depends:
+    - name: ceilometer-controller
+    - name: telemetry-hiera
+  parameters:
+    puppet_manifest: puppet/manifests/configure-compute.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 3600
+
 - id: telemetry-ceilometer-keystone
   type: puppet
   version: 2.1.0
@@ -138,6 +152,8 @@
   cross-depends:
     - name: /(primary-)?keystone/
       role: self
+    - name: telemetry-create-topics
+      role: [primary-kafka, kafka]
   parameters:
     puppet_manifest: "/etc/puppet/modules/openstack_tasks/examples/ceilometer/keystone.pp"
     puppet_modules: "/etc/puppet/modules"

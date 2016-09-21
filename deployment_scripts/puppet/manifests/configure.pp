@@ -87,7 +87,7 @@ if hiera('telemetry::kafka::enabled') {
 
   $kafka_ips  = hiera('telemetry::kafka::broker_list')
   $kafka_url  = "moskafka://${kafka_ips}"
-  $rabbit_url = 'rabbit://'
+  $rabbit_url = hiera('telemetry::rabbit::url')
 
   ceilometer_config { 'DEFAULT/transport_url':                      value => $kafka_url }
   ceilometer_config { 'notification/messaging_urls':                value => [$kafka_url,$rabbit_url] }
@@ -100,6 +100,11 @@ if hiera('telemetry::kafka::enabled') {
   $zookeeper_url  = "zookeeper://${zookeeper_list}"
   ceilometer_config { 'coordination/backend_url': value => $zookeeper_url }
   aodh_config { 'coordination/backend_url':       value => $zookeeper_url }
+
+  package { 'python-kafka':
+    ensure => '1.2.5-1~u14.04+mos1'
+  } ->
+  package { 'python-oslo.messaging.kafka': }
 
 }
 
@@ -163,6 +168,4 @@ Ceilometer_config<||> ~> Service['ceilometer-service']
 
 class { 'telemetry':
   event_pipeline_file => $event_pipeline_file,
-  publishers          => $ceilometer_publishers,
-}
-
+  publishers          => $ceilom
