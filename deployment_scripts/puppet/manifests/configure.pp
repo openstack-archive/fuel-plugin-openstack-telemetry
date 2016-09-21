@@ -101,6 +101,11 @@ if hiera('telemetry::kafka::enabled') {
   ceilometer_config { 'coordination/backend_url': value => $zookeeper_url }
   aodh_config { 'coordination/backend_url':       value => $zookeeper_url }
 
+  package { 'python-kafka':
+    ensure => '1.2.5-1~u14.04+mos1'
+  } ->
+  package { 'python-oslo.messaging.kafka': }
+
 }
 
 # TODO validate values before proceed
@@ -165,4 +170,3 @@ class { 'telemetry':
   event_pipeline_file => $event_pipeline_file,
   publishers          => $ceilometer_publishers,
 }
-
