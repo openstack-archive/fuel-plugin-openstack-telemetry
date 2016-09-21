@@ -191,24 +191,21 @@ attributes:
 
   metadata_ceilo:
     type: "radio"
-    value: 'yes'
+    value: 'no'
     weight: 60
-    label: 'Metadata for Ceilometer samples'
+    label: 'Extra Metadata for Ceilometer samples'
     values:
       - data: 'yes'
         label: "yes"
-        description: ""
+        description: "Extra Metadata can be added if set"
       - data: 'no'
         label: "no"
-        description: ""
+        description: "Default values for 'metadata' will be used if set"
 
   metadata_fields:
-    value: 'status deleted container_format min_ram updated_at
-            min_disk is_public size checksum created_at disk_format
-            protected instance_host host  display_name instance_id
-            instance_type status state'
-    label: 'metadata_fields'
-    description: 'Please specify all needed metadata you want to be kept along with Ceilometer samples. This field is very important if you are going to do metadata-based Ceilometer queries'
+    value: ''
+    label: 'Extra Metadata'
+    description: 'Please use SPACE as a separator; Please specify extra metadata you want to be kept along with Ceilometer samples. This field is very important if you are going to do metadata-based Ceilometer queries'
     weight: 61
     type: "text"
     restrictions:
