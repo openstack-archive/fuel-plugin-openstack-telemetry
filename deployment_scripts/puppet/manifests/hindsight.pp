@@ -14,12 +14,16 @@ $metadata_fields   = hiera('telemetry::metadata_fields')
 $topics            = 'metering.sample'
 $modules_dir       = hiera('telemetry::lua::modules_dir')
 
-if hiera('telemetry::elasticsearch::enabled') {
+if hiera('telemetry::elasticsearch::server', false) {
   $es_server = hiera('telemetry::elasticsearch::server')
-  $es_port   = hiera('telemetry::elasticsearch::rest_port')
 } else {
   $es_server = ''
-  $es_port   = ''
+}
+
+if hiera('telemetry::elasticsearch::rest_port', false) {
+  $es_port = hiera('telemetry::elasticsearch::rest_port')
+} else {
+  $es_port = ''
 }
 
 # Kafka integration

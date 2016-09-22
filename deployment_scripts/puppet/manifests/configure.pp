@@ -3,24 +3,18 @@ notice('MODULAR: fuel-plugin-telemetry: configure.pp')
 # Let's use already defined params for ceilometer
 include ::ceilometer::params
 
-$plugin_data  = hiera_hash('telemetry', undef)
-$resource_api = $plugin_data['resource_api']
-$event_api    = $plugin_data['event_api']
-
+$plugin_data          = hiera_hash('telemetry', undef)
+$resource_api         = $plugin_data['resource_api']
+$event_api            = $plugin_data['event_api']
+$network_metadata     = hiera_hash('network_metadata')
+$elasticsearch_server = hiera('telemetry::elasticsearch::server')
+$elasticsearch_port   = hiera('telemetry::elasticsearch::rest_port')
 # TODO_0 'set' default values when looking for via hiera
 # TODO_1 add if statments in case of 'advanced settings' passed through Fuel UI
 # TODO_2 checks if we can reach ES, influxdb before actioning?
 # Still needed $aodh_nodes ?
-$aodh_nodes              = hiera('aodh_nodes')
+$aodh_nodes           = hiera('aodh_nodes')
 
-# TODO_3 es_node should be configured because of a bug in Ceilometer API
-if hiera('lma::collector::elasticsearch::server', false) {
-  $elasticsearch_node      = hiera('lma::collector::elasticsearch::server')
-  $elasticsearch_port      = hiera('lma::collector::elasticsearch::rest_port')
-} else {
-  $elasticsearch_node      = '0.0.0.0'
-  $elasticsearch_port      = '9200'
-}
 
 $ceilometer_service_name = $::ceilometer::params::api_service_name
 # TODO move to hiera
@@ -35,10 +29,15 @@ $influx_user       = hiera('telemetry::influxdb::user')
 $influx_password   = hiera('telemetry::influxdb::password')
 
 $metering_connection = "stacklight://${influx_user}:${influx_password}@${influxdb_address}:${influxdb_port}/${influxdb_database}"
-
-$resource_connection = "es://${elasticsearch_node}:${elasticsearch_port}"
-$event_connection    = "es://${elasticsearch_node}:${elasticsearch_port}"
 $connection          = $metering_connection
+
+if $elasticsearch_server != '' and $elasticsearch_port != ''{
+  $resource_connection = "es://${elasticsearch_server}:${elasticsearch_port}"
+  $event_connection    = "es://${elasticsearch_server}:${elasticsearch_port}"
+}
+else {
+  fail ("elasticsearch_server and elasticsearch_port variables can't be empty strings")
+}
 
 $packages = {
   'ceilometer-collector' => {
