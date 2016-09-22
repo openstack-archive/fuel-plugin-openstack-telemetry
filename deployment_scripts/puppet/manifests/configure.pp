@@ -3,24 +3,18 @@ notice('MODULAR: fuel-plugin-telemetry: configure.pp')
 # Let's use already defined params for ceilometer
 include ::ceilometer::params
 
-$plugin_data  = hiera_hash('telemetry', undef)
-$resource_api = $plugin_data['resource_api']
-$event_api    = $plugin_data['event_api']
-
+$plugin_data          = hiera_hash('telemetry', undef)
+$resource_api         = $plugin_data['resource_api']
+$event_api            = $plugin_data['event_api']
+$network_metadata     = hiera_hash('network_metadata')
+$elasticsearch_server = hiera('telemetry::elasticsearch::server')
+$elasticsearch_port   = hiera('telemetry::elasticsearch::rest_port')
 # TODO_0 'set' default values when looking for via hiera
 # TODO_1 add if statments in case of 'advanced settings' passed through Fuel UI
 # TODO_2 checks if we can reach ES, influxdb before actioning?
 # Still needed $aodh_nodes ?
-$aodh_nodes              = hiera('aodh_nodes')
+$aodh_nodes           = hiera('aodh_nodes')
 
-# TODO_3 es_node should be configured because of a bug in Ceilometer API
-if hiera('lma::collector::elasticsearch::server', false) {
-  $elasticsearch_node      = hiera('lma::collector::elasticsearch::server')
-  $elasticsearch_port      = hiera('lma::collector::elasticsearch::rest_port')
-} else {
-  $elasticsearch_node      = '0.0.0.0'
-  $elasticsearch_port      = '9200'
-}
 
 $ceilometer_service_name = $::ceilometer::params::api_service_name
 # TODO move to hiera
@@ -36,9 +30,23 @@ $influx_password   = hiera('telemetry::influxdb::password')
 
 $metering_connection = "stacklight://${influx_user}:${influx_password}@${influxdb_address}:${influxdb_port}/${influxdb_database}"
 
-$resource_connection = "es://${elasticsearch_node}:${elasticsearch_port}"
-$event_connection    = "es://${elasticsearch_node}:${elasticsearch_port}"
-$connection          = $metering_connection
+if $event_api {
+  if ($elasticsearch_server != '' and $elasticsearch_port != ''){
+    $event_connection    = "es://${elasticsearch_server}:${elasticsearch_port}"
+  }
+  else{
+    fail ("elasticsearch_server and elasticsearch_port variables can't be empty strings")
+  }
+}
+
+if $resource_api {
+  if ($elasticsearch_server != '' and $elasticsearch_port != ''){
+    $resource_connection = "es://${elasticsearch_server}:${elasticsearch_port}"
+  }
+  else{
+    fail ("elasticsearch_server and elasticsearch_port variables can't be empty strings")
+  }
+}
 
 $packages = {
   'ceilometer-collector' => {
@@ -127,32 +135,29 @@ else {
 }
 ceilometer_config { 'notification/workers': value => max($::processorcount/3,1) }
 
-# Workaround for fixing Ceilometer bug in MOS9.0
-if hiera('fuel_version') == '9.0' {
-  file { '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.py':
-    ensure  => 'present',
-    content => file( 'telemetry/ceilometer_fixes/impl_elasticsearch.py' ),
-    mode    => '0644',
-    owner   => 'root',
-    group   => 'root',
-    notify  => Service['ceilometer-service','ceilometer-agent-notification'],
-    require => File['impl_elasticsearch.pyc'],
-  }
+# Workaround for fixing Ceilometer bug in MOS9.x
+file { '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.py':
+  ensure  => 'present',
+  content => file( 'telemetry/ceilometer_fixes/impl_elasticsearch.py' ),
+  mode    => '0644',
+  owner   => 'root',
+  group   => 'root',
+  notify  => Service['ceilometer-service','ceilometer-agent-notification'],
+  require => File['impl_elasticsearch.pyc'],
+}
 
-  file {'/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.pyc':
-    ensure => 'absent',
-    alias  => 'impl_elasticsearch.pyc',
-  }
+file {'/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.pyc':
+  ensure => 'absent',
+  alias  => 'impl_elasticsearch.pyc',
+}
 
-  service {'ceilometer-agent-notification':
-    ensure     => $service_ensure,
-    name       => $::ceilometer::params::agent_notification_service_name,
-    enable     => $enabled,
-    hasstatus  => true,
-    hasrestart => true,
-    tag        => 'ceilometer-agent-notification',
-  }
-
+service {'ceilometer-agent-notification':
+  ensure     => $service_ensure,
+  name       => $::ceilometer::params::agent_notification_service_name,
+  enable     => $enabled,
+  hasstatus  => true,
+  hasrestart => true,
+  tag        => 'ceilometer-agent-notification',
 }
 
 service { 'ceilometer-service':

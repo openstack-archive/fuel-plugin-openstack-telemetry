@@ -267,6 +267,17 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
+- id: telemetry-notifications
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end]
+  requires: [telemetry-ceilometer-controller, telemetry-integration-configuration]
+  parameters:
+    puppet_manifest: puppet/manifests/notifications.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
 # skip base tasks
 - id: ceilometer-radosgw-user
   type: skipped
