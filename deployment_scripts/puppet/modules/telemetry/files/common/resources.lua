@@ -68,6 +68,8 @@ local resource_msg = {
 }
 
 function add_resource_to_payload(sample, payload)
+    local counter_name, _ = string.gsub(sample.counter_name, "%.", "\\")
+
     local resource_data = {
         timestamp = sample.timestamp,
         resource_id = sample.resource_id,
@@ -76,7 +78,7 @@ function add_resource_to_payload(sample, payload)
         user_id = sample.user_id,
         project_id = sample.project_id,
         meter = {
-            [sample.counter_name] = {
+            [counter_name] = {
                 type = sample.counter_type,
                 unit = sample.counter_unit
             }
