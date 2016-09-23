@@ -1,10 +1,10 @@
 notice('MODULAR: fuel-plugin-telemetry: hiera.pp')
 
-$plugin_data = hiera_hash('telemetry', undef)
-prepare_network_config(hiera_hash('network_scheme', {}))
+$plugin_data      = hiera_hash('telemetry', undef)
 $network_metadata = hiera_hash('network_metadata')
-$hiera_file = '/etc/hiera/plugins/telemetry.yaml'
-$telemetry = hiera('telemetry')
+$hiera_file       = '/etc/hiera/plugins/telemetry.yaml'
+$telemetry        = hiera('telemetry')
+prepare_network_config(hiera_hash('network_scheme', {}))
 
 # Ceilometer
 
@@ -20,41 +20,29 @@ $ceilometer_metering_secret            = $ceilometer_hash['metering_secret']
 $ceilometer_user_password              = $ceilometer_hash['user_password']
 $elasticsearch_script_inline           = 'on'
 $elasticsearch_script_indexed          = 'on'
+$elasticsearch_mode                    = $plugin_data['elasticsearch_mode']
 
 # Elasticsearch
-
-$is_elasticsearch_node = roles_include(['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
-
-if $plugin_data['elastic_search_ip'] {
-  $elasticsearch_mode = 'remote'
-} else {
-  $elasticsearch_mode = 'local'
-}
-
-#$elasticsearch_mode = $plugin_data['elasticsearch_mode']
-$es_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
-$es_nodes_count = count($es_nodes)
+$es_vip_name           = 'es_vip_mgmt'
 
 case $elasticsearch_mode {
   'remote': {
     $es_server = $plugin_data['elastic_search_ip']
+    $es_port   = $plugin_data['elastic_search_port']
   }
   'local': {
-    $es_vip_name = 'es_vip_mgmt'
     if $network_metadata['vips'][$es_vip_name] {
       $es_server = $network_metadata['vips'][$es_vip_name]['ipaddr']
+      # TODO: use data from hiera for $es_port. Can't do it rigt now.
+      $es_port   = '9200'
     } else {
-      $es_server = undef
+      $es_server = ''
+      $es_port   = '9200'
     }
   }
   default: {
     fail("'${elasticsearch_mode}' mode not supported for Elasticsearch")
   }
-}
-if $es_nodes_count > 0 or $es_server {
-  $es_is_deployed = true
-} else {
-  $es_is_deployed = false
 }
 
 # InfluxDB
@@ -166,11 +154,8 @@ lma::elasticsearch::script_indexed: "<%= @elasticsearch_script_indexed %>"
 
 # Elasticsearch
 
-telemetry::elasticsearch::enabled: <%= @es_is_deployed %>
-<% if @es_is_deployed -%>
-telemetry::elasticsearch::server: <%= @es_server %>
-telemetry::elasticsearch::rest_port: 9200
-<% end -%>
+telemetry::elasticsearch::server: "<%= @es_server %>"
+telemetry::elasticsearch::rest_port: "<%= @es_port %>"
 
 # IndluxDB
 
