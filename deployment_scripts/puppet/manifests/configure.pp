@@ -95,6 +95,9 @@ if hiera('telemetry::kafka::enabled') {
 
   ceilometer_config { 'compute/resource_update_interval':           value => 600 }
 
+  # remove mongo url
+  ceilometer_config { 'database/connection':                        ensure => absent }
+
   # Coordination
   $zookeeper_list = hiera('telemetry::kafka::zookeeper_list')
   $zookeeper_url  = "zookeeper://${zookeeper_list}"
