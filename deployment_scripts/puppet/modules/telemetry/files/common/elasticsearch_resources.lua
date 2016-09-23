@@ -11,8 +11,12 @@
 -- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
-require "string"
-require "cjson"
+local string = require "string"
+local cjson = require "cjson"
+local utils = require "lma_utils"
+local table = require "table"
+local pairs = pairs
+local read_message = read_message
 local utils = require "lma_utils"
 
 local index = read_config("index") or "index"
