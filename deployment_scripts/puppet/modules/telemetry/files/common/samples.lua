@@ -126,6 +126,7 @@ function SamplesDecoder:inject_metadata(metadata, tags)
 end
 
 function SamplesDecoder:add_sample_to_payload(sample, payload)
+    local resource_id, _ = string.gsub(sample.resource_id, "/", "-")
     local sample_data = {
         name='sample',
         timestamp = patt.Timestamp:match(sample.timestamp),
@@ -141,7 +142,7 @@ function SamplesDecoder:add_sample_to_payload(sample, payload)
     }
     local tags = {
         meter = sample.counter_name,
-        resource_id = sample.resource_id,
+        resource_id = resource_id,
         project_id = sample.project_id ,
         user_id = sample.user_id,
         source = sample.source

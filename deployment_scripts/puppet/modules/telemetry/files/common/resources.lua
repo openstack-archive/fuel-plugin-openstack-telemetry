@@ -69,10 +69,11 @@ local resource_msg = {
 
 function add_resource_to_payload(sample, payload)
     local counter_name, _ = string.gsub(sample.counter_name, "%.", "\\")
+    local resource_id, _ = string.gsub(sample.resource_id, "/", "-")
 
     local resource_data = {
         timestamp = sample.timestamp,
-        resource_id = sample.resource_id,
+        resource_id = resource_id,
         source = sample.source or "",
         metadata = sample.resource_metadata,
         user_id = sample.user_id,
@@ -84,7 +85,7 @@ function add_resource_to_payload(sample, payload)
             }
         }
     }
-    payload[sample.resource_id] = resource_data
+    payload[resource_id] = resource_data
 end
 
 function ResourcesDecoder.new()
