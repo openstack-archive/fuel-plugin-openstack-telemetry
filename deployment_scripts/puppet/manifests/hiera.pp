@@ -111,9 +111,19 @@ $rabbit_password = $rabbit_info['password']
 $rabbit_user     = $rabbit_info['user']
 $amqp_url        = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}:${amqp_port}/"
 
-$metadata_fields   = join(['status deleted container_format min_ram updated_at ',
+# metadata_fields defitition
+$metadata_fields_default   = join(['status deleted container_format min_ram updated_at ',
   'min_disk is_public size checksum created_at disk_format protected instance_host ',
-  'host  display_name instance_id instance_type status state'])
+  'host  display_name instance_id instance_type status state user_metadata.stack'])
+$metadata_fields_plugin = $plugin_data['metadata_fields']
+
+if ( $metadata_fields_plugin != '') {
+  $metadata_fields = concat([$plugin_data['metadata_fields']], " ",${metadata_fields_default}")
+}
+else {
+  $metadata_fields = $metadata_fields_default
+}
+
 
 # Kafka
 $kafka_port     = 9092
