@@ -243,6 +243,18 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
+- id: telemetry-create-topics
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end, telemetry-hindsight]
+  role: [primary-kafka, kafka]
+  requires: [kafka-installation]
+  parameters:
+    puppet_manifest: puppet/manifests/create-topics.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
 - id: telemetry-hindsight
   type: puppet
   version: 2.1.0
@@ -255,17 +267,7 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
-- id: telemetry-create-topics
-  type: puppet
-  version: 2.1.0
-  groups: [primary-controller, controller]
-  required_for: [post_deployment_end]
-  role: [primary-kafka, kafka]
-  requires: [telemetry-hindsight]
-  parameters:
-    puppet_manifest: puppet/manifests/create-topics.pp
-    puppet_modules: puppet/modules:/etc/puppet/modules
-    timeout: 300
+
 
 - id: telemetry-notifications
   type: puppet
@@ -275,6 +277,20 @@
   requires: [telemetry-ceilometer-controller, telemetry-integration-configuration]
   parameters:
     puppet_manifest: puppet/manifests/notifications.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 300
+
+- id: telemetry-coordination
+  type: puppet
+  version: 2.1.0
+  groups: [primary-controller, controller]
+  required_for: [post_deployment_end]
+  requires: [telemetry-heka]
+  cross-depends:
+    - name: kafka-installation
+    - name: telemetry-create-topics
+  parameters:
+    puppet_manifest: puppet/manifests/coordination.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
