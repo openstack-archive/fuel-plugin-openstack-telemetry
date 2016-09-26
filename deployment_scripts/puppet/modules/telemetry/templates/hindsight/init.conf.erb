@@ -2,5 +2,6 @@ description "Telemetry collector hindsight service"
 
 start on runlevel [2345]
 stop on shutdown
+respawn
 
 exec start-stop-daemon --start -c hindsight --exec /usr/bin/hindsight -- <%= @conf_dir %>/hindsight.cfg
