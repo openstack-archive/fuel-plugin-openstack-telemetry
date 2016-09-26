@@ -2,6 +2,11 @@ attributes:
   metadata:
     # Settings group can be one of "general", "security", "compute", "network",
     # "storage", "logging", "openstack_services" and "other".
+    restrictions:
+      - condition: "settings:ceilometer-redis.metadata.enabled == true"
+        message: "Please do not use the Telemetry plugin with Redis plugin enabled"
+        strict: false
+        action: disable
     group: 'other'
   advanced_settings:
     label: "Advanced settings"
