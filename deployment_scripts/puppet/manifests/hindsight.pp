@@ -125,6 +125,9 @@ $configs = {
   "${run_dir}/input/kafka_input_3.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
   },
+  "${run_dir}/input/prune_input.cfg" => {
+    content => template( "${templates}/input/prune_input.cfg.erb"),
+  },
 }
 
 create_resources(file, $configs, $files_defaults)
