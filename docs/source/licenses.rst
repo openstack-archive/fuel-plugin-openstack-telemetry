@@ -1,0 +1,4 @@
+.. _licenses:
+
+Licenses
+--------
