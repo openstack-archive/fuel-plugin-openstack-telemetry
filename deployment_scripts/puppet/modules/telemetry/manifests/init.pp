@@ -19,13 +19,11 @@
 # === Parameters
 #
 # [*event_pipeline_file*]
-#   TODO
 #
 # [*publishers*]
-#   TODO
 #
 #
-# === Examples (TODO)
+# === Example
 #
 # class { 'telemetry':
 #   event_pipeline_file => $event_pipeline_file,

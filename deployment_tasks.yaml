@@ -267,8 +267,6 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 300
 
-
-
 - id: telemetry-notifications
   type: puppet
   version: 2.1.0

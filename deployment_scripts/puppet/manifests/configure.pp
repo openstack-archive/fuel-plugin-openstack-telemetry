@@ -9,17 +9,11 @@ $event_api            = $plugin_data['event_api']
 $network_metadata     = hiera_hash('network_metadata')
 $elasticsearch_server = hiera('telemetry::elasticsearch::server')
 $elasticsearch_port   = hiera('telemetry::elasticsearch::rest_port')
-# TODO_0 'set' default values when looking for via hiera
-# TODO_1 add if statments in case of 'advanced settings' passed through Fuel UI
-# TODO_2 checks if we can reach ES, influxdb before actioning?
-# Still needed $aodh_nodes ?
 $aodh_nodes           = hiera('aodh_nodes')
 
 
 $ceilometer_service_name = $::ceilometer::params::api_service_name
-# TODO move to hiera
 $event_pipeline_file     = '/etc/ceilometer/event_pipeline.yaml'
-# TODO move to hiera
 $ceilometer_publishers   = 'direct'
 
 $influxdb_address  = hiera('telemetry::influxdb::address')
@@ -73,11 +67,6 @@ $packages = {
   },
 }
 
-# TODO FOR V3: stop collector only when qeue is empty*
-# *wait utill all the events went from collector
-#  before stop collector service
-# maybe service'collector' ensure stopped; require exec 'wait for qeue is empty'
-
 create_resources(package, $packages)
 
 # Stop not needed any more service
@@ -118,8 +107,6 @@ if hiera('telemetry::kafka::enabled') {
   package { 'python-oslo.messaging.kafka': }
 
 }
-
-# TODO validate values before proceed
 
 ceilometer_config { 'database/metering_connection':   value => $metering_connection }
 if $resource_api {

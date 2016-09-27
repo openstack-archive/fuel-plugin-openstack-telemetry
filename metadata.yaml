@@ -1,6 +1,6 @@
 # Plugin name
 name: telemetry
-# Human-readable name for your plugin (TODO)
+# Human-readable name
 title: The OpenStack Telemetry Plugin
 # Plugin version
 version: '1.0.0'

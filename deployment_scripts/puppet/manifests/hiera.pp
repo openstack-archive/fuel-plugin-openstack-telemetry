@@ -33,12 +33,10 @@ case $elasticsearch_mode {
   'local': {
     if $network_metadata['vips'][$es_vip_name] {
       $es_server = $network_metadata['vips'][$es_vip_name]['ipaddr']
-      # TODO: use data from hiera for $es_port. Can't do it rigt now.
-      $es_port   = '9200'
     } else {
       $es_server = ''
-      $es_port   = '9200'
     }
+    $es_port   = '9200'
   }
   default: {
     fail("'${elasticsearch_mode}' mode not supported for Elasticsearch")
@@ -59,7 +57,6 @@ if $telemetry['influxdb_address'] {
   $influxdb_user     = $telemetry['influxdb_user']
   $influxdb_password = $telemetry['influxdb_password']
 
-  # TODO hardcode or move to params?
   $retention_period = '30'
 
 } else {

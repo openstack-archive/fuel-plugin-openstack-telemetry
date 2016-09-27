@@ -44,7 +44,6 @@ if !hiera('telemetry::kafka::enabled') {
     "${config_dir}/file-output-resource.toml":               content => template( 'telemetry/heka/file-output-resource.toml.erb' );
     "${config_dir}/file-output.toml":                        content => template( 'telemetry/heka/file-output.toml.erb' );
     "${config_dir}/filter-influxdb_accumulator_sample.toml": content => template( 'telemetry/heka/filter-influxdb_accumulator_sample.toml.erb' );
-    # TODO disable config when Elasticsearch not in use
     "${config_dir}/output-elasticsearch-resource.toml":      content => template( 'telemetry/heka/output-elasticsearch-resource.toml.erb' );
     "${config_dir}/output-influxdb-samples.toml":            content => template( 'telemetry/heka/output-influxdb-samples.toml.erb' );
   }
@@ -57,7 +56,7 @@ if !hiera('telemetry::kafka::enabled') {
   $max_timer_inject   = hiera('telemetry::heka::max_timer_inject')
   $poolsize           = hiera('telemetry::heka::poolsize')
 
-  # TODO we dont't need them on controller
+  # We dont't use init on controller, we use pacemaker
   $install_init_script = false
 
   # Workaround for heka module
@@ -68,7 +67,6 @@ if !hiera('telemetry::kafka::enabled') {
   ::heka { 'telemetry-collector-heka':
     config_dir          => $config_dir,
     user                => $user,
-    #additional_groups   => $additional_groups,
     hostname            => $::hostname,
     max_message_size    => $max_message_size,
     max_process_inject  => $max_process_inject,
