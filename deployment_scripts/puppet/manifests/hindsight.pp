@@ -129,6 +129,10 @@ $configs = {
 create_resources(file, $configs, $files_defaults)
 
 # Files
+file { '/usr/share/luasandbox/sandboxes/heka/input/prune_input.lua':
+ ensure => 'link',
+ target => "${run_dir}/input/prune_input.lua",
+}
 
 $scripts = {
   "${run_dir}/output/influxdb_tcp.lua" => {
@@ -139,7 +143,10 @@ $scripts = {
   },
   "${run_dir}/output/elasticsearch_bulk_tcp.lua" => {
     source => 'puppet:///modules/telemetry/hindsight/run/output/elasticsearch_bulk_tcp.lua'
-  }
+  },
+  "${run_dir}/input/prune_input.cfg" => {
+    source => 'puppet:///modules/telemetry/hindsight/run/input/prune_input.cfg',
+  },
 }
 
 create_resources(file, $scripts, $files_defaults)
