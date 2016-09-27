@@ -125,6 +125,9 @@ $configs = {
   "${run_dir}/input/kafka_input_3.cfg" => {
     content => template( "${templates}/input/kafka_input.cfg.erb"),
   },
+  "${run_dir}/input/prune_input.cfg" => {
+    content => template( "${templates}/input/prune_input.cfg.erb"),
+  },
 }
 
 create_resources(file, $configs, $files_defaults)
@@ -139,6 +142,10 @@ create_resources(file, $configs, $files_defaults)
 #kafka_input_cfg_creator { $sufix: }
 
 # Files
+file { '/usr/share/luasandbox/sandboxes/heka/input/prune_input.lua':
+ ensure => 'link',
+ target => "${run_dir}/input/prune_input.lua",
+}
 
 $scripts = {
   "${run_dir}/output/influxdb_tcp.lua" => {
