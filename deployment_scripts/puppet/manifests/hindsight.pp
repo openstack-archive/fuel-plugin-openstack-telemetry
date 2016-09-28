@@ -130,8 +130,8 @@ create_resources(file, $configs, $files_defaults)
 
 # Files
 file { '/usr/share/luasandbox/sandboxes/heka/input/prune_input.lua':
- ensure => 'link',
- target => "${run_dir}/input/prune_input.lua",
+  ensure => 'link',
+  target => "${run_dir}/input/prune_input.lua",
 }
 
 $scripts = {
