@@ -100,6 +100,9 @@ function get_field(field, metadata)
         if type(field) == 'table' then
             value = metadata
             for _, field_part in ipairs(field) do
+                if not value then
+                    break
+                end
                 value = value[field_part]
             end
         else
