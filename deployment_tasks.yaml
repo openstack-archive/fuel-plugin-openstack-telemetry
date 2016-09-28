@@ -250,6 +250,9 @@
   required_for: [post_deployment_end, telemetry-hindsight]
   role: [primary-kafka, kafka]
   requires: [kafka-installation]
+  cross-depends:
+    - name: kafka-installation
+      policy: all
   parameters:
     puppet_manifest: puppet/manifests/create-topics.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
