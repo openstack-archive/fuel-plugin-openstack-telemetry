@@ -111,7 +111,7 @@ $amqp_url        = "amqp://${rabbit_user}:${rabbit_password}@${amqp_host}:${amqp
 # metadata_fields definition
 $metadata_fields_default   = join(['status deleted container_format min_ram updated_at ',
   'min_disk is_public size checksum created_at disk_format protected instance_host ',
-  'host  display_name instance_id instance_type status state user_metadata.stack'])
+  'host display_name instance_id instance_type status state user_metadata.stack'])
 $metadata_fields_plugin = $plugin_data['metadata_fields']
 
 # Kafka
