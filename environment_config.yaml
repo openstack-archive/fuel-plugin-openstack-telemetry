@@ -11,7 +11,7 @@ attributes:
   advanced_settings:
     label: "Advanced settings"
     value: false
-    description: "Ceilometer Event API and Resource API are disabled if not set"
+    description: "Enable Ceilometer Event API and Resource API"
     weight: 10
     type: checkbox
     restrictions:
@@ -61,14 +61,14 @@ attributes:
     values:
       - data: "local"
         label: "Use local Elasticsearch"
-        description: "The ElasticSearch installed via The StackLight Elasticsearch-Kibana plugin will be used if set"
+        description: "If selected, ElasticSearch installed via the StackLight Elasticsearch-Kibana plugin will be used"
         restrictions:
           - condition: "(settings:elasticsearch_kibana == null) or (settings:elasticsearch_kibana.metadata.enabled != true)"
             action: disable
             strict: false
             message: "The StackLight Elasticsearch-Kibana plugin must be installed and enabled. Or use Elasticsearch in 'external' mode"
       - data: "remote"
-        label: "Use External Elasticsearch"
+        label: "Use external Elasticsearch"
         description: "'external' ElasticSearch will be used if set"
     restrictions:
       - condition: "settings:telemetry.advanced_settings.value == false"
@@ -79,7 +79,7 @@ attributes:
   elastic_search_ip:
     value: ''
     label: 'External ElasticSearch IP or DNS name'
-    description: "In case you want to use an external Elasticsearch please specify an IP or a DNS name here"
+    description: "IP or DNS name for an external Elasticsearch"
     weight: 30
     type: "text"
     regex:
@@ -97,7 +97,7 @@ attributes:
   elastic_search_port:
     value: '9200'
     label: 'External Elasticsearch port'
-    description: "In case you want to use an external Elasticsearch please specify a port number. Default is 9200"
+    description: "Port number for an external Elasticsearch. It is 9200 by default"
     weight: 40
     type: "text"
     regex:
@@ -119,20 +119,20 @@ attributes:
     values:
       - data: 'local'
         label: "Use local InfluxDB"
-        description: "The InfluxDB installed via The StackLight InfluxDB-Grafana plugin will be used if set"
+        description: "If selected, InfluxDB installed via The StackLight InfluxDB-Grafana plugin will be used"
         restrictions:
           - condition: "(settings:influxdb_grafana == null) or (settings:influxdb_grafana.metadata.enabled != true)"
             action: disable
             strict: false
             message: "The StackLight InfluxDB-Grafana plugin must be installed and enabled. Or use InfluxDB 'External' option below"
       - data: 'remote'
-        label: "Use External InfluxDB"
-        description: "'external' InfluxDB will be used if set"
+        label: "Use external InfluxDB"
+        description: "If selected, external InfluxDB will be used"
 
   influxdb_address:
     value: ''
     label: 'External InfluxDB'
-    description: "In case you want to use a remote InfluxDB please spesify an IP or a DNS name here"
+    description: "IP or a DNS name for remote InfluxDB"
     weight: 51
     type: "text"
     regex:
@@ -145,7 +145,7 @@ attributes:
   influxdb_port:
     value: '8086'
     label: 'External InfluxDB port'
-    description: "In case you want to use a remote InfluxDB please spesify a port number. DEFAULT is 8086"
+    description: "Port number for remote InfluxDB. It is 8086 by default"
     weight: 52
     type: "text"
     regex:
@@ -171,7 +171,7 @@ attributes:
   influxdb_user:
     value: ''
     label: 'External InfluxDB user'
-    description: "The username to access external InfluxDB"
+    description: "Username for external InfluxDB"
     weight: 54
     type: "text"
     regex:
@@ -184,7 +184,7 @@ attributes:
   influxdb_password:
     value: ''
     label: 'External InfluxDB password'
-    description: "The password to access external InfluxDB"
+    description: "Password for external InfluxDB"
     weight: 55
     type: "password"
     regex:
@@ -210,7 +210,7 @@ attributes:
   metadata_fields:
     value: ''
     label: 'Extra Metadata'
-    description: 'Please use SPACE as a separator; Please specify extra metadata you want to be kept along with Ceilometer samples. This field is very important if you are going to do metadata-based Ceilometer queries'
+    description: 'Specify the required metadata to be kept along with Ceilometer samples. This field is important if you are going to perform metadata-based Ceilometer queries.'
     weight: 61
     type: "text"
     restrictions:
