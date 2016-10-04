@@ -114,14 +114,6 @@ $metadata_fields_default   = join(['status deleted container_format min_ram upda
   'host display_name instance_id instance_type status state user_metadata.stack'])
 $metadata_fields_plugin = $plugin_data['metadata_fields']
 
-if ( $metadata_fields_plugin != '') {
-  $metadata_fields = join(concat([$plugin_data['metadata_fields']], ' ', $metadata_fields_default))
-}
-else {
-  $metadata_fields = $metadata_fields_default
-}
-
-
 # Kafka
 $kafka_port     = 9092
 $zookeeper_port = 2181
@@ -199,7 +191,7 @@ telemetry::kafka::port: <%= @kafka_port %>
 
 telemetry::rabbit::url: "<%= @amqp_url %>"
 
-telemetry::metadata_fields: "<%= @metadata_fields %>"
+telemetry::metadata_fields: "<%= @metadata_fields_default %> <%= @metadata_fields_plugin %>"
 telemetry::lua::modules_dir: "/usr/share/telemetry_lua_modules"
 
 ')
