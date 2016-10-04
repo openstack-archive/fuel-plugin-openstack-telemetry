@@ -118,7 +118,7 @@ if ( $metadata_fields_plugin != '') {
   $metadata_fields = join(concat([$plugin_data['metadata_fields']], ' ', $metadata_fields_default))
 }
 else {
-  $metadata_fields = $metadata_fields_default
+  $metadata_fields = join([$metadata_fields_default])
 }
 
 
