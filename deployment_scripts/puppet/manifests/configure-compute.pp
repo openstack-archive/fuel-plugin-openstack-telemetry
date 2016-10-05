@@ -23,4 +23,5 @@ if hiera('telemetry::kafka::enabled') {
 
 exec { 'fix polling interval':
   command => '/bin/sed -i \'s/interval: 600/interval: 60/g\' /etc/ceilometer/pipeline.yaml'
-}
+} ~>
+service { 'ceilometer-polling': }
