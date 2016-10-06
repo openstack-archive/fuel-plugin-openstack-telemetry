@@ -237,7 +237,7 @@
   version: 2.1.0
   groups: [primary-controller, controller]
   required_for: [post_deployment_end]
-  requires: [telemetry-influxdb-create-db]
+  requires: [telemetry-influxdb-create-db, telemetry-lua-scripts]
   parameters:
     puppet_manifest: puppet/manifests/heka.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
