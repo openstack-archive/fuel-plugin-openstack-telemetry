@@ -1,6 +1,8 @@
 
 notice('MODULAR: fuel-plugin-telemetry: configure-compute.pp')
 
+service { 'ceilometer-polling':}
+
 if hiera('telemetry::kafka::enabled') {
 
   package { 'python-kafka':
@@ -16,9 +18,9 @@ if hiera('telemetry::kafka::enabled') {
     'DEFAULT/transport_url':                      value => $kafka_url;
     'DEFAULT/shuffle_time_before_polling_task':   value => 300;
     'compute/resource_update_interval':           value => 600;
-  } ~>
-  service { 'ceilometer-polling':}
+  }
 
+  Ceilometer_config<||> ~> Service['ceilometer-polling']
 }
 
 exec { 'fix polling interval':
