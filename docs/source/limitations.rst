@@ -13,12 +13,12 @@ The OpenStack Telemetry plugin for Fuel has the following limitations:
     * ``ceilometer sample-list``
     * ``ceilometer statistics``
 
-  * If :guilabel:`Resource API` is enabled:
+  * If the :guilabel:`Resource API` is enabled:
 
     * ``ceilometer resource-list``
     * ``ceilometer meter-list``
 
-  * If :guilabel:`Event API` is enabled:
+  * If the :guilabel:`Event API` is enabled:
 
     * ``ceilometer event-list``
 
@@ -27,8 +27,7 @@ The OpenStack Telemetry plugin for Fuel has the following limitations:
   are not supported.
 
 * The Telemetry plugin does not store all the OpenStack resources metadata
-  along with Ceilometer Samples in InfluxDB. Using the Fuel web UI, you can
-  configure the list of metadata. The default values are as follows:
+  along with the Ceilometer Samples. The default list is as follows:
 
   | ``status``
   | ``deleted``
@@ -49,14 +48,15 @@ The OpenStack Telemetry plugin for Fuel has the following limitations:
   | ``state``
   | ``user_metadata.stack``
 
-  To use Ceilometer API requests based on metadata, add the required metadata
-  as described in :ref:`configure`.
+  To use the Ceilometer API requests based on metadata, add the required
+  metadata as described in :ref:`configure`.
 
-* Coordination for Ceilometer central agent and Aodh alarm evaluator services
-  are switched off if RabbitMQ is used. The Telemetry plugin is based on
-  the Ceilometer used in Mirantis OpenStack. Therefore, the notification
+* The coordination for Ceilometer central agent and Aodh alarm evaluator
+  services is switched off if RabbitMQ is used. The Telemetry plugin is based
+  on the Ceilometer used in Mirantis OpenStack. Therefore, the notification
   agents do not require coordination. The coordination through tooz with
   Zookeeper back end is supported if the Kafka plugin is installed.
 
-* The OpenStack Telemetry plugin is incompatible with the
-  `Redis plugin <https://github.com/openstack/fuel-plugin-ceilometer-redis>`_.
+* The OpenStack Telemetry plugin cannot be used if the
+  `Redis plugin <https://github.com/openstack/fuel-plugin-ceilometer-redis>`_
+  is already enabled in the environment.

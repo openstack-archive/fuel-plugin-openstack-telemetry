@@ -29,13 +29,13 @@ Once installed, configure the OpenStack Telemetry plugin.
    .. image:: images/advanced_settings.png
       :width: 450pt
 
-   If selected, configure Elasticsearch that stores Ceilometer events and
-   resources:
+   Once selected, configure the Elasticsearch cluster that stores Ceilometer
+   events and resources:
 
    * Select :guilabel:`Use local Elasticsearch` if you have deployed the
      Elasticsearch-Kibana plugin.
    * Otherwise, select :guilabel:`Use External Elasticsearch` and define the
-     IP and port for the Elasticsearch you want to use.
+     IP or DNS name and port for the Elasticsearch cluster you want to use.
 
 #. Configure InfluxDB:
 
@@ -46,9 +46,9 @@ Once installed, configure the OpenStack Telemetry plugin.
      InfluxDB-Grafana plugin.
    * Otherwise, select :guilabel:`Use External InfluxDB` and define the IP or
      DNS name, port, database name, username, and password for the
-     Elasticsearch you want to use to keep the Ceilometer-related data.
+     InfluxDB server you want to use to store the Ceilometer-related data.
 
-#. Configure additional metadata to be kept along with Ceilometer samples in
+#. Configure additional metadata to be stored along with Ceilometer samples in
    InfluxDB:
 
    .. image:: images/metadata.png

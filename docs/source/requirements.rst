@@ -11,7 +11,7 @@ Requirement             Version/Comment
 Fuel                    9.0 on Mitaka
 ======================= =================================
 
-If you use external storages:
+If you use external back ends:
 
 +----------------------------------+-----------------------------------------+
 | Requirement                      | Version/Comment                         |
@@ -32,13 +32,13 @@ The OpenStack Telemetry plugin is compatible with the following plugins:
 * To install the back-end services automatically, use the following StackLight
   plugins:
 
-  ============================ ======================================
-  Plugin                       Version/Comment
-  ============================ ======================================
-  StackLight InfluxDB-Grafana  0.10.0 or newer
-  StackLight ES-Kibana         0.10.2 or newer. If Resource API
-                               is disabled, the version may be 0.10.0
-  ============================ ======================================
+  =============================== ======================================
+  Plugin                          Version/Comment
+  =============================== ======================================
+  StackLight InfluxDB-Grafana     0.10.0 or newer
+  StackLight Elasticsearch-Kibana 0.10.2 or newer. If the Resource API
+                                  is disabled, the version may be 0.10.0
+  =============================== ======================================
 
 * To use Kafka as a message queue, install:
 
