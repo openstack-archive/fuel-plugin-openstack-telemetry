@@ -48,22 +48,11 @@ $packages = {
     ensure => 'absent',
     require => Service['ceilometer-collector'],
   },
-  'python-pip' => {
+  'python-influxdb' => {
     ensure => 'present',
   },
-  'influxdb' => {
+  'python-elasticsearch' => {
     ensure => 'present',
-    provider => 'pip',
-    require => Package['python-pip'],
-    # Not sure at a momment
-    notify => Service['ceilometer-service']
-  },
-  'elasticsearch' => {
-    ensure => 'present',
-    provider => 'pip',
-    require => Package['python-pip'],
-    # Not sure at a momment
-    notify => Service['ceilometer-service']
   },
 }
 

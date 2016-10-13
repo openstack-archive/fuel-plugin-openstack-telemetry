@@ -15,7 +15,9 @@ download_packages \
     $REPO_URL/libr/librdkafka/librdkafka1_0.9.1-1~ub14.04%2bmos1_amd64.deb \
     $REPO_URL/l/lua-sandbox/libluasandbox1_1.0.3-5~ub14.04%2bmos1_amd64.deb \
     $REPO_URL/l/lua-sandbox/libluasandbox-dev_1.0.3-5~ub14.04%2bmos1_amd64.deb \
-    $REPO_URL/l/lua-sandbox-extensions/lua-sandbox-extensions_0.0~git20160812.98065e76-1~ub14.04%2bmos3_amd64.deb
+    $REPO_URL/l/lua-sandbox-extensions/lua-sandbox-extensions_0.0~git20160812.98065e76-1~ub14.04%2bmos3_amd64.deb \
+    $REPO_URL/p/python-elasticsearch/python-elasticsearch_1.6.0-1~u14.04%2bmos1_all.deb \
+    http://archive.ubuntu.com/ubuntu/pool/universe/i/influxdb-python/python-influxdb_3.0.0-1_all.deb
 
 # Oslo messaging
 
