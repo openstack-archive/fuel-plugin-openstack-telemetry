@@ -6,7 +6,7 @@ set -eux
 
 HEKA_VERSION="0.10.0"
 COLLECTOR_TAG="0.10.0"
-REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-2016-09-03-050322/pool/main"
+REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-latest/pool/main"
 
 # Hindsight packages
 
@@ -17,11 +17,11 @@ download_packages \
     $REPO_URL/l/lua-sandbox/libluasandbox-dev_1.0.3-5~ub14.04%2bmos1_amd64.deb \
     $REPO_URL/l/lua-sandbox-extensions/lua-sandbox-extensions_0.0~git20160812.98065e76-1~ub14.04%2bmos3_amd64.deb \
     $REPO_URL/p/python-elasticsearch/python-elasticsearch_1.6.0-1~u14.04%2bmos1_all.deb \
-    http://archive.ubuntu.com/ubuntu/pool/universe/i/influxdb-python/python-influxdb_3.0.0-1_all.deb
+    $REPO_URL/i/influxdb-python/python-influxdb_2.12.0-1~u14.04%2bmos1_all.deb
 
 # Oslo messaging
 
-OSLO_REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-2016-09-21-095249/pool/main"
+OSLO_REPO_URL="http://mirror.fuel-infra.org/mos-repos/ubuntu/snapshots/9.0-latest/pool/main"
 
 download_packages $OSLO_REPO_URL/p/python-oslo.messaging.kafka/python-oslo.messaging.kafka_0.0.1-1~u14.04%2bmos2_all.deb
 download_packages $OSLO_REPO_URL/p/python-kafka/python-kafka_1.2.5-1~u14.04%2bmos1_all.deb
