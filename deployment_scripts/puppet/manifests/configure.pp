@@ -130,6 +130,39 @@ file {'/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsea
   alias  => 'impl_elasticsearch.pyc',
 }
 
+file { '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_stacklight.py':
+  ensure  => 'present',
+  content => file( 'telemetry/ceilometer_fixes/impl_stacklight.py' ),
+  mode    => '0644',
+  owner   => 'root',
+  group   => 'root',
+  notify  => Service['ceilometer-service','ceilometer-agent-notification'],
+  require => File['impl_stacklight.pyc'],
+}
+
+file {'/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_stacklight.pyc':
+  ensure => 'absent',
+  alias  => 'impl_stacklight.pyc',
+}
+
+file { '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/metrics/__init__.py':
+  ensure  => 'present',
+  content => file( 'telemetry/ceilometer_fixes/metrics/__init__.py' ),
+  mode    => '0644',
+  owner   => 'root',
+  group   => 'root',
+  notify  => Service['ceilometer-service','ceilometer-agent-notification'],
+}
+
+file { '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/metrics/units.py':
+  ensure  => 'present',
+  content => file( 'telemetry/ceilometer_fixes/metrics/units.py' ),
+  mode    => '0644',
+  owner   => 'root',
+  group   => 'root',
+  notify  => Service['ceilometer-service','ceilometer-agent-notification'],
+}
+
 service {'ceilometer-agent-notification':
   ensure     => $service_ensure,
   name       => $::ceilometer::params::agent_notification_service_name,
