@@ -114,7 +114,7 @@ else {
 }
 ceilometer_config { 'notification/workers': value => max($::processorcount/3,1) }
 
-# Workaround for fixing Ceilometer bug in MOS9.x
+# Workaround for fixing Ceilometer and Aodh bugs in MOS9.x
 file { '/usr/lib/python2.7/dist-packages/ceilometer/event/storage/impl_elasticsearch.py':
   ensure  => 'present',
   content => file( 'telemetry/ceilometer_fixes/impl_elasticsearch.py' ),
@@ -171,6 +171,21 @@ file { '/usr/lib/python2.7/dist-packages/ceilometer/storage/metrics/units.py':
   notify  => Service['ceilometer-service','ceilometer-agent-notification'],
 }
 
+file { '/usr/lib/python2.7/dist-packages/aodh/evaluator/threshold.py':
+  ensure  => 'present',
+  content => file( 'telemetry/ceilometer_fixes/threshold.py' ),
+  mode    => '0644',
+  owner   => 'root',
+  group   => 'root',
+  notify  => Service['aodh-evaluator'],
+  require => File['threshold.pyc'],
+}
+
+file {'/usr/lib/python2.7/dist-packages/aodh/evaluator/threshold.pyc':
+  ensure => 'absent',
+  alias  => 'threshold.pyc',
+}
+
 service {'ceilometer-agent-notification':
   ensure     => $service_ensure,
   name       => $::ceilometer::params::agent_notification_service_name,
@@ -187,6 +202,15 @@ service { 'ceilometer-service':
   hasstatus  => true,
   hasrestart => true,
   tag        => 'ceilometer-service',
+}
+
+service { 'aodh-evaluator':
+  ensure     => $service_ensure,
+  name       => $::aodh::params::evaluator_service_name,
+  enable     => $enabled,
+  hasstatus  => true,
+  hasrestart => true,
+  tag        => 'aodh-evaluator',
 }
 
 Ceilometer_config<||> ~> Service['ceilometer-service']
