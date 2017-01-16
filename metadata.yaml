@@ -3,7 +3,7 @@ name: telemetry
 # Human-readable name
 title: The OpenStack Telemetry Plugin
 # Plugin version
-version: '1.0.0'
+version: '1.0.1'
 # Description
 description: Deploy/configure Ceilometer and Aodh with InfluxDB and Elasticsearch backends
 # Required fuel version

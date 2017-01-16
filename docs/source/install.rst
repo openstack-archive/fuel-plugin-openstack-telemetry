@@ -28,7 +28,7 @@ plugins catalog:**
 
    .. code-block:: console
 
-      # scp telemetry-1.0-1.0.0-1.noarch.rpm root@fuel-master:/tmp
+      # scp telemetry-1.0-1.0.1-1.noarch.rpm root@fuel-master:/tmp
 
 #. Log in to the Fuel Master node CLI as root.
 #. Install the plugin using the
@@ -45,7 +45,7 @@ plugins catalog:**
      # fuel plugins
      id | name       | version | package_version | releases
      ---|------------|---------|-----------------|--------------------
-     1  | telemetry  |  1.0.0  |  4.0.0          | ubuntu (mitaka-9.0)
+     1  | telemetry  |  1.0.1  |  4.0.0          | ubuntu (mitaka-9.0)
 
 #. Proceed to :ref:`configure`.
 
@@ -124,6 +124,6 @@ that file later on.
       # fuel plugins
       id | name       | version | package_version | releases
       ---|------------|---------|-----------------|--------------------
-      1  | telemetry  |  1.0.0  |  4.0.0          | ubuntu (mitaka-9.0)
+      1  | telemetry  |  1.0.1  |  4.0.0          | ubuntu (mitaka-9.0)
 
 #. Proceed to :ref:`configure`.
