@@ -1,0 +1,8 @@
+Code-Review+2: Ilya Tyaptin <ityaptin@mirantis.com>
+Workflow+1: Ilya Tyaptin <ityaptin@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 16 Jan 2017 09:11:23 +0000
+Reviewed-on: https://review.openstack.org/420588
+Project: openstack/fuel-plugin-openstack-telemetry
+Branch: refs/heads/master
