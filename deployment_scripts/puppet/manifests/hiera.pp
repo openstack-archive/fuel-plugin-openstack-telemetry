@@ -101,7 +101,7 @@ if $telemetry['influxdb_address'] {
 
 # Rabbit
 
-$amqp_host       = get_network_role_property('management', 'ipaddr')
+$amqp_host       = get_network_role_property('mgmt/messaging', 'ipaddr')
 $amqp_port       = hiera('amqp_port')
 $rabbit_info     = hiera('rabbit')
 $rabbit_password = $rabbit_info['password']
