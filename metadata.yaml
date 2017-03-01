@@ -7,7 +7,7 @@ version: '1.0.1'
 # Description
 description: Deploy/configure Ceilometer and Aodh with InfluxDB and Elasticsearch backends
 # Required fuel version
-fuel_version: ['9.0']
+fuel_version: ['9.0','10.0']
 # Specify license of your plugin
 licenses: ['Apache License Version 2.0']
 # Specify author or company name
@@ -26,6 +26,11 @@ is_hotpluggable: true
 releases:
   - os: ubuntu
     version: mitaka-9.0
+    mode: ['ha']
+    deployment_scripts_path: deployment_scripts/
+    repository_path: repositories/ubuntu
+  - os: ubuntu
+    version: newton-10.0
     mode: ['ha']
     deployment_scripts_path: deployment_scripts/
     repository_path: repositories/ubuntu
