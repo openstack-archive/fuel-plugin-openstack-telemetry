@@ -146,11 +146,11 @@ file {'/usr/lib/python2.7/dist-packages/ceilometer/storage/impl_stacklight.pyc':
 }
 
 file { '/usr/lib/python2.7/dist-packages/ceilometer/storage/metrics':
-  ensure  => 'directory',
-  mode    => '0644',
-  owner   => 'root',
-  group   => 'root',
-  notify  => Service['ceilometer-service','ceilometer-agent-notification'],
+  ensure => 'directory',
+  mode   => '0644',
+  owner  => 'root',
+  group  => 'root',
+  notify => Service['ceilometer-service','ceilometer-agent-notification'],
 }
 
 file { '/usr/lib/python2.7/dist-packages/ceilometer/storage/metrics/__init__.py':
