@@ -224,10 +224,9 @@ else {
     hasrestart => true,
   }
 
-  # The heat-engine service is managed by Pacemaker.
+  # In MOS >=10 heat-engine isn't managed by pacemaker LP #1673074
   service { $heat_engine_service:
     hasstatus  => true,
     hasrestart => true,
-    provider   => 'pacemaker',
   }
 
