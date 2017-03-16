@@ -207,8 +207,9 @@ else {
   # Heat notifications
   include heat::params
 
-  $heat_api_service    = $::heat::params::api_service_name
-  $heat_engine_service = $::heat::params::engine_service_name
+  $heat_api_service             = $::heat::params::api_service_name
+  $heat_engine_service          = $::heat::params::engine_service_name
+  $heat_engine_primitive_exists = inline_template("<%= `if pcs resource show | grep -q 'p_heat-engine'; then /bin/echo true; fi;`%>")
 
   heat_config { 'DEFAULT/notification_topics':
     value  => $notification_topics,
@@ -224,10 +225,16 @@ else {
     hasrestart => true,
   }
 
-  # The heat-engine service is managed by Pacemaker.
-  service { $heat_engine_service:
-    hasstatus  => true,
-    hasrestart => true,
-    provider   => 'pacemaker',
+  # In MOS >=10 heat-engine isn't managed by pacemaker LP #1673074
+  if $heat_engine_primitive_exists {
+    service { $heat_engine_service:
+      hasstatus  => true,
+      hasrestart => true,
+      provider   => 'pacemaker',
+    }
+  } else {
+    service { $heat_engine_service:
+      hasstatus  => true,
+      hasrestart => true,
   }
 
