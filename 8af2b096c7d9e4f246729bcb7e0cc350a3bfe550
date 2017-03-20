@@ -1,0 +1,9 @@
+Code-Review+2: Simon Pasquier <spasquier@mirantis.com>
+Code-Review+1: Anastasia Kuznetsova <akuznetsova@mirantis.com>
+Workflow+1: Nadya Shakhat <nprivalova@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 20 Mar 2017 11:03:46 +0000
+Reviewed-on: https://review.openstack.org/439557
+Project: openstack/fuel-plugin-openstack-telemetry
+Branch: refs/heads/master
