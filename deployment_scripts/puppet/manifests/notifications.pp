@@ -14,6 +14,7 @@
 
 notice('fuel-plugin-openstack-telemetry: notifications.pp')
 
+$fuel_version         = 0 + hiera('fuel_version')
 $ceilometer           = hiera_hash('ceilometer', {})
 $rabbit               = hiera_hash('rabbit')
 $storage_options      = hiera_hash('storage', {})
@@ -224,10 +225,17 @@ else {
     hasrestart => true,
   }
 
-  # The heat-engine service is managed by Pacemaker.
-  service { $heat_engine_service:
-    hasstatus  => true,
-    hasrestart => true,
-    provider   => 'pacemaker',
+  # In MOS >=10 heat-engine isn't managed by pacemaker LP #1673074
+  if $fuel_version < 10.0 {
+    service { $heat_engine_service:
+      hasstatus  => true,
+      hasrestart => true,
+      provider   => 'pacemaker',
+    }
+  } else {
+    service { $heat_engine_service:
+      hasstatus  => true,
+      hasrestart => true,
+    }
   }
 
