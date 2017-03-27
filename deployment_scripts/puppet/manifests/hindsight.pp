@@ -151,14 +151,42 @@ $scripts = {
 
 create_resources(file, $scripts, $files_defaults)
 
-file { '/etc/init/telemetry-collector-hindsight.conf':
-  content => template( "${templates}/init.conf.erb"),
-  before  => Service['telemetry-collector-hindsight'],
+if $::operatingsystem == 'Ubuntu' {
+  if versioncmp($::operatingsystemmajrelease, '16') >= 0 {
+
+    $hindsight_provider = 'systemd'
+
+    file { 'hindsight-service-unit':
+      ensure  => present,
+      path    => '/lib/systemd/system/telemetry-collector-hindsight.service',
+      mode    => '0644',
+      content => template("${templates}/hindsight.unit.erb"),
+    }
+
+    exec { 'systemctl-daemon-reload':
+      command     => 'systemctl daemon-reload',
+      refreshonly => true,
+      path        => $::path,
+    }
+
+    File['hindsight-service-unit'] ~> Exec['systemctl-daemon-reload'] -> Service['telemetry-collector-hindsight']
+  } else {
+
+    $hindsight_provider = 'upstart'
+
+    file { '/etc/init/telemetry-collector-hindsight.conf':
+      content => template( "${templates}/init.conf.erb"),
+    }
+
+    File['/etc/init/telemetry-collector-hindsight.conf'] ~> Service['telemetry-collector-hindsight']
+  }
+} else {
+  $hindsight_provider = undef
 }
 
 service { 'telemetry-collector-hindsight':
   ensure   => 'running',
   enable   => true,
-  provider => 'upstart',
-  require  => File['/etc/init/telemetry-collector-hindsight.conf'],
+  provider => $hindsight_provider,
 }
+
