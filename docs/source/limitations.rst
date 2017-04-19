@@ -60,3 +60,8 @@ The OpenStack Telemetry plugin for Fuel has the following limitations:
 * The OpenStack Telemetry plugin cannot be used if the
   `Redis plugin <https://github.com/openstack/fuel-plugin-ceilometer-redis>`_
   is already enabled in the environment.
+
+* If telemetry-collector-hindsight service running as systemd service,
+  there is no separate log file. The process of collecting logs is centralized.
+  Way to get recent logs of `telemetry-collector-hindsight` service:
+  | ``journalctl -u telemetry-collector-hindsight``
