@@ -46,8 +46,6 @@ local transform_functions = {
     launched_at = utils.format_datetime,
     deleted_at = utils.format_datetime,
     terminated_at = utils.format_datetime,
-    user_id = normalize_uuid,
-    project_id = normalize_uuid,
 }
 
 function map(func, tbl)
