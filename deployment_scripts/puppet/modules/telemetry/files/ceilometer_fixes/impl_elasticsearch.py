@@ -84,10 +84,25 @@ class Connection(base.Connection):
         iclient.put_template(name='enable_timestamp', body=ts_template)
 
     def record_events(self, events):
-
+        datetime_trait_fields = [
+            'audit_period_beginning',
+            'audit_period_ending',
+            'deleted_at',
+            'created_at',
+            'launched_at',
+            'modify_at'
+        ]
         def _build_bulk_index(event_list):
             for ev in event_list:
-                traits = {t.name: t.value for t in ev.traits}
+                traits = {}
+                for t in ev.traits:
+                    name = t.name
+                    value = t.value
+                    if name in datetime_trait_fields:
+                        if value:
+                            ts = timeutils.parse_isotime(value)
+                            value = timeutils.normalize_time(ts)
+                    traits[name] = value
                 yield {'_op_type': 'create',
                        '_index': '%s_%s' % (self.index_name,
                                             ev.generated.date().isoformat()),
