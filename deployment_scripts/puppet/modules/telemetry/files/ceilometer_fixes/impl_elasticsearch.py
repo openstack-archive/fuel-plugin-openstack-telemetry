@@ -102,7 +102,7 @@ class Connection(base.Connection):
                         try:
                             ts = timeutils.parse_isotime(value)
                             ts = timeutils.normalize_time(ts)
-                            value = timeutils.strtime(ts)
+                            value = ts.isoformat()
                         except ValueError:
                             LOG.exception(
                                 _LE('Could not parse timestamp [%s] from [%s] traits field' % (value, name))
