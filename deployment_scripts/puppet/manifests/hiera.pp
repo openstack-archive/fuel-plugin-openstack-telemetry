@@ -124,7 +124,7 @@ if count($kafka_ip_map)>0 {
     notice('Kafka nodes found')
     $kafka_enabled      = true
     $kafka_ips          = sort(values($kafka_ip_map))
-    # Format: host:port,host:port for ceiolmeter.conf
+    # Format: host:port,host:port for ceilometer.conf
     $tmp_brokers_list   = join($kafka_ips,":${kafka_port},")
     $broker_list        = join([$tmp_brokers_list,":${kafka_port}"])
     $tmp_zookeeper_list = join($kafka_ips,":${zookeeper_port},")
