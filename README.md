@@ -1,4 +1,3 @@
-Fuel Plugin Openstack Telemetry
-===============================
+# This repo has moved to OpenDev
 
-Plugin description
+It can now be found at [https://opendev.org/x/fuel-plugin-openstack-telemetry](https://opendev.org/x/fuel-plugin-openstack-telemetry)

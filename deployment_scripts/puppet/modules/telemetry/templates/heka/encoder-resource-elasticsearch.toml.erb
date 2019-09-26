@@ -1,9 +1,0 @@
-[elasticsearch_resource_encoder]
-type     = "SandboxEncoder"
-filename = "<%= @modules_dir %>/encoders/es_ceilometer_resources.lua"
-module_directory = "<%= @modules_dir %>/common;/usr/share/heka/lua_modules"
-
-[elasticsearch_resource_encoder.config]
-index     = "ceilometer_resource"
-type_name = "source"
-encoder = "elasticsearch_resources"
